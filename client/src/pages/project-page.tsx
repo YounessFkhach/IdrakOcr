@@ -439,24 +439,108 @@ export default function ProjectPage() {
   const parseExtractedFields = (result: any) => {
     if (!result) return [];
     
-    // Parse Gemini and OpenAI results
-    const geminiData = parseJsonResult(result.geminiResult);
-    const openaiData = parseJsonResult(result.openaiResult);
+    // Custom function to extract structured data from various AI formats
+    const extractFieldsFromResult = (jsonResult: string) => {
+      // Try regular JSON parse first
+      try {
+        const parsed = JSON.parse(jsonResult);
+        
+        // Case 1: Direct JSON object containing field data
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          // First, check if there's a mergedText field that might contain the real data
+          if (parsed.mergedText && typeof parsed.mergedText === 'string') {
+            // Try to parse the mergedText as JSON
+            try {
+              const innerParsed = JSON.parse(parsed.mergedText);
+              if (typeof innerParsed === 'object' && !Array.isArray(innerParsed)) {
+                // Found our fields!
+                return innerParsed;
+              }
+            } catch (e) {
+              // Not JSON, might be formatted text - we'll handle that as a special case
+              console.warn("mergedText is not valid JSON, treating as text");
+              
+              // Could be markdown with field values - use a regex approach
+              const fieldRegex = /[*-]\s+\*\*([^:]+):\*\*\s+(.*?)(?=\n[*-]|\n\n|$)/gm;
+              let match;
+              const extractedFields: Record<string, string> = {};
+              
+              // Extract fields from markdown format like: "- **Field Name:** Field Value"
+              while ((match = fieldRegex.exec(parsed.mergedText)) !== null) {
+                const [_, fieldName, fieldValue] = match;
+                const normalizedName = fieldName
+                  .trim()
+                  .replace(/\s+/g, '')
+                  .replace(/^[A-Z]/, c => c.toLowerCase());
+                
+                extractedFields[normalizedName] = fieldValue.trim();
+              }
+              
+              if (Object.keys(extractedFields).length > 0) {
+                return extractedFields;
+              }
+            }
+          }
+          
+          // If we get here, just use the parsed object directly
+          // Filter out known metadata fields
+          const metaFields = ['mergedText', 'analysis', 'error', 'success', 'message', 'details'];
+          const fieldData: Record<string, any> = {};
+          
+          Object.keys(parsed).forEach(key => {
+            if (!metaFields.includes(key)) {
+              fieldData[key] = parsed[key];
+            }
+          });
+          
+          return fieldData;
+        }
+      } catch (e) {
+        console.error("Failed to parse JSON result:", e);
+      }
+      
+      // Fallback: empty object
+      return {};
+    };
     
-    // Get all unique field names
+    // Extract data from both models
+    const geminiData = extractFieldsFromResult(result.geminiResult);
+    const openaiData = extractFieldsFromResult(result.openaiResult);
+    
+    console.log('Extracted Gemini data:', geminiData);
+    console.log('Extracted OpenAI data:', openaiData);
+    
+    // Get all unique field names from both results
     const fieldNames = new Set([
-      ...Object.keys(geminiData || {}),
-      ...Object.keys(openaiData || {})
+      ...Object.keys(geminiData),
+      ...Object.keys(openaiData)
     ]);
     
-    // Create comparison rows
-    return Array.from(fieldNames).map(name => ({
-      name,
-      geminiValue: (geminiData && geminiData[name] !== undefined) ? 
-                   String(geminiData[name]) : null,
-      openaiValue: (openaiData && openaiData[name] !== undefined) ? 
-                   String(openaiData[name]) : null
-    }));
+    // Filter out analysis/metadata fields
+    const excludedFields = ['analysis', 'error', 'success', 'message', 'details'];
+    
+    // Create comparison rows for each field
+    return Array.from(fieldNames)
+      .filter(name => !excludedFields.includes(name))
+      .map(name => {
+        // Try to find a human-readable label
+        const label = name
+          // Insert spaces before capital letters
+          .replace(/([A-Z])/g, ' $1')
+          // Replace underscores and hyphens with spaces
+          .replace(/[_-]/g, ' ')
+          // Capitalize first letter, lowercase the rest
+          .replace(/^\w/, c => c.toUpperCase())
+          .replace(/^./, c => c.toUpperCase())
+          .trim();
+        
+        return {
+          name: label,
+          fieldName: name,
+          geminiValue: geminiData[name] !== undefined ? String(geminiData[name]) : null,
+          openaiValue: openaiData[name] !== undefined ? String(openaiData[name]) : null
+        };
+      });
   };
 
   // Helper to safely parse JSON results
