@@ -1,5 +1,5 @@
 
-# Idrak OCR - Advanced Document Processing Platform (Vibe coding project)
+# Idrak OCR - Advanced Document Processing Platform
 
 Idrak OCR (from Arabic إدراك meaning "comprehension/perception") is an advanced OCR platform powered by dual AI engines - Gemini and ChatGPT - for unparalleled accuracy in text extraction and data structuring.
 
