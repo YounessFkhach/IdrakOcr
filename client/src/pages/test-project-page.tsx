@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams, Link } from "wouter";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -35,12 +35,17 @@ export default function TestProjectPage() {
     data: project, 
     isLoading: isLoadingProject, 
     error: projectError 
-  } = useQuery<Project>({
+  } = useQuery<Project, Error>({
     queryKey: [`/api/projects/${id}`],
-    onSuccess: (data) => {
-      setCustomPrompt(data.customPrompt || "");
-    }
+    staleTime: 60000 // 1 minute
   });
+  
+  // Set custom prompt when project data is loaded
+  useEffect(() => {
+    if (project) {
+      setCustomPrompt(project.customPrompt || "");
+    }
+  }, [project]);
 
   // Handle image upload
   const handleImageUpload = (file: File) => {
@@ -109,6 +114,7 @@ export default function TestProjectPage() {
       return await res.json();
     },
     onSuccess: (data: OcrResult) => {
+      console.log("Processing complete. Result data:", data);
       setProcessingResult(data);
       toast({
         title: t("test.processingComplete"),

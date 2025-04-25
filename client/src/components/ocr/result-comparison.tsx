@@ -31,13 +31,17 @@ export function ResultComparison({
   const [activeTab, setActiveTab] = useState<string>("gemini");
   const [parsedGeminiResult, setParsedGeminiResult] = useState<{
     text?: string;
+    mergedText?: string;
     confidence?: number;
     metadata?: { [key: string]: any };
+    analysis?: { [key: string]: any };
   }>({});
   const [parsedOpenAIResult, setParsedOpenAIResult] = useState<{
     text?: string;
+    mergedText?: string;
     confidence?: number;
     metadata?: { [key: string]: any };
+    analysis?: { [key: string]: any };
   }>({});
   
   useEffect(() => {
@@ -133,7 +137,7 @@ export function ResultComparison({
                 )}
               </div>
               <div className="bg-background rounded-lg p-4 mb-4 max-h-96 overflow-y-auto">
-                <MarkdownPreview content={parsedGeminiResult.text || t("results.noData")} />
+                <MarkdownPreview content={parsedGeminiResult.text || parsedGeminiResult.mergedText || t("results.noData")} />
               </div>
               {parsedGeminiResult.metadata?.image_quality && (
                 <div className="flex items-start gap-2 text-xs text-muted-foreground mt-2">
@@ -156,7 +160,7 @@ export function ResultComparison({
                 )}
               </div>
               <div className="bg-background rounded-lg p-4 mb-4 max-h-96 overflow-y-auto">
-                <MarkdownPreview content={parsedOpenAIResult.text || t("results.noData")} />
+                <MarkdownPreview content={parsedOpenAIResult.text || parsedOpenAIResult.mergedText || t("results.noData")} />
               </div>
               {parsedOpenAIResult.metadata?.image_quality && (
                 <div className="flex items-start gap-2 text-xs text-muted-foreground mt-2">
