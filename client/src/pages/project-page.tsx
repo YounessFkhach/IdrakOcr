@@ -505,11 +505,19 @@ export default function ProjectPage() {
       if (typeof jsonResult === 'string' && !jsonResult.trim().startsWith('{')) {
         try {
           // Extract content that looks like JSON
-          const jsonMatch = jsonResult.match(/(\{.*\})/s);
-          if (jsonMatch && jsonMatch[1]) {
-            const parsed = JSON.parse(jsonMatch[1]);
-            if (parsed && typeof parsed === 'object') {
-              return parsed;
+          // Try to find valid JSON - using a simpler regex
+          const jsonMatches = jsonResult.match(/\{.*?\}/g);
+          if (jsonMatches) {
+            for (const match of jsonMatches) {
+              try {
+                const parsed = JSON.parse(match);
+                if (parsed && typeof parsed === 'object') {
+                  console.log('Found valid JSON object in string:', parsed);
+                  return parsed;
+                }
+              } catch (e) {
+                console.warn('Match not valid JSON:', match.substring(0, 30) + '...');
+              }
             }
           }
         } catch (e) {
