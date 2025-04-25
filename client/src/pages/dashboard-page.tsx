@@ -40,7 +40,7 @@ export default function DashboardPage() {
   const [deleteProjectId, setDeleteProjectId] = useState<number | null>(null);
 
   // Fetch projects
-  const { data: projects, isLoading, error } = useQuery<Project[]>({
+  const { data: projects, isLoading, error } = useQuery<Project[], Error>({
     queryKey: ["/api/projects"],
   });
 
@@ -61,7 +61,7 @@ export default function DashboardPage() {
     } catch (error) {
       toast({
         title: t("projects.deleteFailed"),
-        description: error.message,
+        description: (error as Error).message,
         variant: "destructive",
       });
     }
@@ -156,18 +156,38 @@ export default function DashboardPage() {
                   </p>
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center text-muted-foreground">
-                      {project.preferredModel ? (
+                      {project.status && (
                         <div className="flex items-center">
-                          <span className="h-2 w-2 rounded-full bg-primary mr-2"></span>
-                          <span>{project.preferredModel === "gemini" ? "Gemini" : "ChatGPT"}</span>
+                          <span className={`h-2 w-2 rounded-full mr-2 ${
+                            project.status === "complete" 
+                              ? "bg-green-500" 
+                              : project.status === "field_editing" || project.status === "field_detection"
+                              ? "bg-yellow-500"
+                              : "bg-primary"
+                          }`}></span>
+                          <span>{project.status === "draft" 
+                            ? t("projects.statusDraft") 
+                            : project.status === "field_detection"
+                            ? t("projects.statusDetection")
+                            : project.status === "field_editing"
+                            ? t("projects.statusEditing")
+                            : t("projects.statusComplete")
+                          }</span>
                         </div>
-                      ) : (
-                        <span>{t("projects.noModelSelected")}</span>
                       )}
                     </div>
-                    <Link href={project.preferredModel ? `/projects/${project.id}/deploy` : `/projects/${project.id}/test`}>
+                    
+                    <Link href={
+                      project.status === "complete" 
+                        ? `/projects/${project.id}/deploy` 
+                        : `/projects/${project.id}`
+                    }>
                       <Button variant="ghost" size="sm" className="text-primary">
-                        <span>{project.preferredModel ? t("projects.openDeploy") : t("projects.openTest")}</span>
+                        <span>{
+                          project.status === "complete" 
+                            ? t("projects.openDeploy") 
+                            : t("projects.continue")
+                        }</span>
                         <ArrowUpRight className="ml-1 h-3 w-3" />
                       </Button>
                     </Link>

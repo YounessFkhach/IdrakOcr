@@ -25,6 +25,7 @@ function Router() {
       <ProtectedRoute path="/projects/:id" component={ProjectPage} />
       <ProtectedRoute path="/projects/:id/test" component={TestProjectPage} />
       <ProtectedRoute path="/projects/:id/deploy" component={DeployProjectPage} />
+      <ProtectedRoute path="/projects/:id/results/:resultId" component={TestProjectPage} />
       <Route component={NotFound} />
     </Switch>
   );
