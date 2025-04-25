@@ -90,6 +90,7 @@ export default function ProjectPage() {
   const [isFieldDialogOpen, setIsFieldDialogOpen] = useState(false);
   const [editingFieldIndex, setEditingFieldIndex] = useState<number | null>(null);
   const [selectedExample, setSelectedExample] = useState<File | null>(null);
+  const [processedResult, setProcessedResult] = useState<any>(null);
 
   // Fetch project if editing
   const { 
@@ -386,8 +387,9 @@ export default function ProjectPage() {
         description: t("projects.testProcessedSuccess"),
       });
 
-      // Navigate to result view page
-      navigate(`/projects/${id}/results/${data.id}`);
+      // Store the processed result and move to the final step instead of redirecting
+      setProcessedResult(data);
+      setCurrentStep(5);
     },
     onError: (error: Error) => {
       toast({
@@ -1151,6 +1153,37 @@ export default function ProjectPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
+                {/* Show the processed result if available */}
+                {processedResult && (
+                  <div className="border rounded-lg p-6 mb-4">
+                    <h3 className="text-lg font-medium mb-4">{t("projects.testResults")}</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="border rounded-lg p-4">
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">
+                          {t("results.geminiResult")}
+                        </h4>
+                        <div className="bg-muted/50 rounded p-3 max-h-[300px] overflow-auto">
+                          <pre className="text-xs whitespace-pre-wrap">
+                            {processedResult.geminiResult || t("results.noData")}
+                          </pre>
+                        </div>
+                      </div>
+                      
+                      <div className="border rounded-lg p-4">
+                        <h4 className="font-medium text-sm text-muted-foreground mb-2">
+                          {t("results.openaiResult")}
+                        </h4>
+                        <div className="bg-muted/50 rounded p-3 max-h-[300px] overflow-auto">
+                          <pre className="text-xs whitespace-pre-wrap">
+                            {processedResult.openaiResult || t("results.noData")}
+                          </pre>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div className="bg-primary/10 rounded-lg p-6 flex gap-4">
                   <div className="bg-primary rounded-full h-12 w-12 flex items-center justify-center shrink-0">
                     <CheckCircle className="h-6 w-6 text-primary-foreground" />
