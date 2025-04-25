@@ -116,7 +116,32 @@ export default function DeployProjectPage() {
     mutationFn: async () => {
       if (selectedFiles.length === 0) throw new Error(t("deploy.noFilesSelected"));
       
-      if (!hasPreferedModel) throw new Error(t("deploy.noModelSelected"));
+      // Instead of throwing an error, set a default model if none exists
+      if (!hasPreferedModel && project) {
+        // Update the project with a default model preference
+        try {
+          await fetch(`/api/projects/${id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              preferredModel: "gemini" // Default to gemini
+            }),
+            credentials: "include"
+          });
+          // Update project data in state
+          if (project) {
+            project.preferredModel = "gemini";
+          }
+          toast({
+            title: t("deploy.modelAutoSelected"),
+            description: t("deploy.geminiSelectedAuto"),
+          });
+        } catch (error) {
+          console.error("Failed to set default model:", error);
+        }
+      }
       
       const formData = new FormData();
       selectedFiles.forEach(file => {
@@ -242,7 +267,7 @@ export default function DeployProjectPage() {
                   <Button
                     size="lg"
                     onClick={() => deployMutation.mutate()}
-                    disabled={selectedFiles.length === 0 || deployMutation.isPending || isPolling || !hasPreferedModel}
+                    disabled={selectedFiles.length === 0 || deployMutation.isPending || isPolling}
                     className="px-8"
                   >
                     {(deployMutation.isPending || isPolling) && <Loader2 className="h-4 w-4 animate-spin mr-2" />}

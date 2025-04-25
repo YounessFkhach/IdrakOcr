@@ -1377,7 +1377,6 @@ export default function ProjectPage() {
             {/* Upload component */}
             <ImageUpload
               onImageUpload={(file) => {
-                setSelectedTestFile(file);
                 // Auto-start processing when a file is selected
                 processTestMutation.mutate(file);
               }}
