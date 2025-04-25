@@ -1042,7 +1042,7 @@ export default function ProjectPage() {
   // Progress indicators for the multi-step process
   const renderProgress = () => {
     const steps = [
-      { id: 1, name: t("projects.basicInfo"), icon: FileText },
+      { id: 1, name: t("projects.basicInformation"), icon: FileText },
       { id: 2, name: t("projects.defineFields"), icon: ClipboardCheck },
       { id: 3, name: t("projects.editFields"), icon: Pencil },
       { id: 4, name: t("projects.testProject"), icon: FlaskConical },
