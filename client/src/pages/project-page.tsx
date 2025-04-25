@@ -1120,7 +1120,7 @@ export default function ProjectPage() {
               <div className="py-4">
                 <Button 
                   variant="outline" 
-                  onClick={onFieldsSubmit}
+                  onClick={() => updateFieldsMutation.mutate(formFields)}
                   className="gap-1 rounded-full border-primary/30 text-primary"
                 >
                   <Save className="h-4 w-4 mr-1" />
@@ -1404,118 +1404,130 @@ export default function ProjectPage() {
       
       case 5: // Deploy project
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("projects.deployProject")}</CardTitle>
-              <CardDescription>{t("projects.deployProjectDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
+          <div className="space-y-8">
+            {/* Section header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Upload className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h2 className="text-xl font-semibold">{t("projects.deployProject")}</h2>
+                <p className="text-muted-foreground text-sm mt-1">{t("projects.deployProjectDesc")}</p>
+              </div>
+            </div>
+            
+            {/* Test results section */}
+            {processedResult && (
               <div className="space-y-6">
-                {/* Show the processed result if available */}
-                {processedResult && (
-                  <div className="border rounded-lg p-6 mb-4">
-                    <h3 className="text-lg font-medium mb-4">{t("projects.testResults")}</h3>
-                    
-                    <div className="mb-4">
-                      <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                        {t("results.comparison")}
-                      </h4>
-                      <div className="overflow-x-auto border rounded-lg">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>{t("projects.fieldName")}</TableHead>
-                              <TableHead>{t("results.geminiResult")}</TableHead>
-                              <TableHead>{t("results.openaiResult")}</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {parseExtractedFields(processedResult).map((field, index) => (
-                              <TableRow key={index}>
-                                <TableCell className="font-medium">{field.name}</TableCell>
-                                <TableCell>{field.geminiValue || '-'}</TableCell>
-                                <TableCell>{field.openaiValue || '-'}</TableCell>
-                              </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
-                      </div>
-                    </div>
-                    
-                    {/* Model selection buttons */}
-                    <div className="flex gap-4 mt-6">
-                      <Button 
-                        onClick={() => selectModelMutation.mutate({
-                          resultId: Number(processedResult?.id),
-                          model: "gemini"
-                        })}
-                        variant="outline"
-                        className="flex-1 border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        {t("results.useGemini")}
-                      </Button>
-                      <Button 
-                        onClick={() => selectModelMutation.mutate({
-                          resultId: Number(processedResult?.id),
-                          model: "openai"
-                        })}
-                        variant="outline"
-                        className="flex-1 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700"
-                      >
-                        <CheckCircle className="mr-2 h-4 w-4" />
-                        {t("results.useOpenAI")}
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                <h3 className="text-lg font-medium">{t("projects.testResults")}</h3>
+                <p className="text-muted-foreground mb-4">
+                  {t("results.comparison")}
+                </p>
                 
-                <div className="bg-primary/10 rounded-lg p-6 flex gap-4">
-                  <div className="bg-primary rounded-full h-12 w-12 flex items-center justify-center shrink-0">
-                    <CheckCircle className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-medium mb-1">{t("projects.readyForDeployment")}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {t("projects.readyForDeploymentDesc")}
-                    </p>
-                    
-                    <div className="flex gap-2 flex-wrap">
-                      <Button
-                        onClick={() => navigate(`/projects/${id}/deploy`)}
-                        className="gap-1"
-                      >
-                        <UploadCloud className="h-4 w-4 mr-1" />
-                        {t("projects.startDeployment")}
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => setCurrentStep(4)}
-                      >
-                        <FlaskConical className="h-4 w-4 mr-1" />
-                        {t("projects.runMoreTests")}
-                      </Button>
-                    </div>
+                <div className="overflow-x-auto border rounded-xl">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="font-medium">{t("projects.fieldName")}</TableHead>
+                        <TableHead className="font-medium">{t("results.geminiResult")}</TableHead>
+                        <TableHead className="font-medium">{t("results.openaiResult")}</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {parseExtractedFields(processedResult).map((field, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-semibold">{field.name}</TableCell>
+                          <TableCell>{field.geminiValue || '-'}</TableCell>
+                          <TableCell>{field.openaiValue || '-'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+                
+                {/* Model selection */}
+                <div className="flex flex-col sm:flex-row gap-4 mt-6">
+                  <Button 
+                    onClick={() => selectModelMutation.mutate({
+                      resultId: Number(processedResult?.id),
+                      model: "gemini"
+                    })}
+                    variant="outline"
+                    className="flex-1 border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full h-12"
+                  >
+                    <CheckCircle className="mr-2 h-5 w-5" />
+                    {t("results.useGemini")}
+                  </Button>
+                  <Button 
+                    onClick={() => selectModelMutation.mutate({
+                      resultId: Number(processedResult?.id),
+                      model: "openai"
+                    })}
+                    variant="outline"
+                    className="flex-1 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-full h-12"
+                  >
+                    <CheckCircle className="mr-2 h-5 w-5" />
+                    {t("results.useOpenAI")}
+                  </Button>
+                </div>
+              </div>
+            )}
+            
+            {/* Deployment section */}
+            <div className="mt-8 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-8">
+              <div className="flex gap-6 items-start">
+                <div className="bg-background rounded-full h-16 w-16 flex items-center justify-center shrink-0 shadow-sm">
+                  <CheckCircle className="h-9 w-9 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold mb-2">{t("projects.readyForDeployment")}</h3>
+                  <p className="text-muted-foreground mb-6 max-w-2xl">
+                    {t("projects.readyForDeploymentDesc")}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      onClick={() => navigate(`/projects/${id}/deploy`)}
+                      className="gap-1 px-6 rounded-full h-12 shadow-sm hover:shadow transition-shadow"
+                      size="lg"
+                    >
+                      <UploadCloud className="h-5 w-5 mr-1" />
+                      {t("projects.startDeployment")}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setCurrentStep(4)}
+                      className="gap-1 px-6 rounded-full h-12"
+                      size="lg"
+                    >
+                      <FlaskConical className="h-5 w-5 mr-1" />
+                      {t("projects.runMoreTests")}
+                    </Button>
                   </div>
                 </div>
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
+            </div>
+            
+            {/* Form actions */}
+            <div className="flex justify-between pt-4 border-t border-border/30">
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(4)}
+                className="rounded-full px-6"
               >
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
               </Button>
+              
               <Button
                 variant="default"
                 onClick={() => navigate("/dashboard")}
+                className="rounded-full px-6"
               >
                 {t("projects.backToDashboard")}
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         );
       
       default:
