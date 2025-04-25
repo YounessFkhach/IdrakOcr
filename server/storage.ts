@@ -1,8 +1,11 @@
 import { users, type User, type InsertUser, projects, type Project, type InsertProject, ocrResults, type OcrResult, type InsertOcrResult } from "@shared/schema";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import { db } from "./db";
+import { eq, and } from "drizzle-orm";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
 
-const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 // modify the interface with any CRUD methods
 // you might need
@@ -28,115 +31,97 @@ export interface IStorage {
   sessionStore: session.SessionStore;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private projects: Map<number, Project>;
-  private ocrResults: Map<number, OcrResult>;
-  private userCurrentId: number;
-  private projectCurrentId: number;
-  private ocrResultCurrentId: number;
-  
+export class DatabaseStorage implements IStorage {
   sessionStore: session.SessionStore;
 
   constructor() {
-    this.users = new Map();
-    this.projects = new Map();
-    this.ocrResults = new Map();
-    this.userCurrentId = 1;
-    this.projectCurrentId = 1;
-    this.ocrResultCurrentId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
+    this.sessionStore = new PostgresSessionStore({
+      pool,
+      createTableIfMissing: true
     });
   }
 
   // User methods
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.userCurrentId++;
-    const createdAt = new Date();
-    const user: User = { ...insertUser, id, createdAt };
-    this.users.set(id, user);
+    const [user] = await db.insert(users).values(insertUser).returning();
     return user;
   }
   
   // Project methods
   async getProjects(userId: number): Promise<Project[]> {
-    return Array.from(this.projects.values()).filter(
-      (project) => project.userId === userId,
-    );
+    return await db.select().from(projects).where(eq(projects.userId, userId));
   }
   
   async getProject(id: number): Promise<Project | undefined> {
-    return this.projects.get(id);
+    const [project] = await db.select().from(projects).where(eq(projects.id, id));
+    return project;
   }
   
   async createProject(insertProject: InsertProject): Promise<Project> {
-    const id = this.projectCurrentId++;
-    const createdAt = new Date();
-    const project: Project = { ...insertProject, id, createdAt };
-    this.projects.set(id, project);
+    const [project] = await db.insert(projects).values(insertProject).returning();
     return project;
   }
   
   async updateProject(id: number, data: Partial<Project>): Promise<Project | undefined> {
-    const project = this.projects.get(id);
-    if (!project) return undefined;
+    const [project] = await db
+      .update(projects)
+      .set(data)
+      .where(eq(projects.id, id))
+      .returning();
     
-    const updatedProject: Project = { ...project, ...data };
-    this.projects.set(id, updatedProject);
-    return updatedProject;
+    return project;
   }
   
   async deleteProject(id: number): Promise<boolean> {
-    return this.projects.delete(id);
+    const result = await db.delete(projects).where(eq(projects.id, id));
+    return result.count > 0;
   }
   
   // OCR Result methods
   async getOcrResults(projectId: number): Promise<OcrResult[]> {
-    return Array.from(this.ocrResults.values()).filter(
-      (result) => result.projectId === projectId,
-    );
+    return await db.select().from(ocrResults).where(eq(ocrResults.projectId, projectId));
   }
   
   async getOcrResult(id: number): Promise<OcrResult | undefined> {
-    return this.ocrResults.get(id);
+    const [result] = await db.select().from(ocrResults).where(eq(ocrResults.id, id));
+    return result;
   }
   
   async createOcrResult(insertResult: InsertOcrResult): Promise<OcrResult> {
-    const id = this.ocrResultCurrentId++;
-    const createdAt = new Date();
-    const ocrResult: OcrResult = { 
-      ...insertResult, 
-      id, 
-      createdAt, 
-      geminiData: null, 
-      openaiData: null, 
-      geminiResult: null, 
-      openaiResult: null, 
-      selectedResult: null 
-    };
-    this.ocrResults.set(id, ocrResult);
-    return ocrResult;
+    const [result] = await db
+      .insert(ocrResults)
+      .values({
+        ...insertResult,
+        geminiData: null,
+        openaiData: null,
+        geminiResult: null,
+        openaiResult: null,
+        selectedResult: null
+      })
+      .returning();
+    
+    return result;
   }
   
   async updateOcrResult(id: number, data: Partial<OcrResult>): Promise<OcrResult | undefined> {
-    const result = this.ocrResults.get(id);
-    if (!result) return undefined;
+    const [result] = await db
+      .update(ocrResults)
+      .set(data)
+      .where(eq(ocrResults.id, id))
+      .returning();
     
-    const updatedResult: OcrResult = { ...result, ...data };
-    this.ocrResults.set(id, updatedResult);
-    return updatedResult;
+    return result;
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
