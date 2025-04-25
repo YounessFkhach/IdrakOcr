@@ -14,7 +14,7 @@ interface ThemeContextType {
 }
 
 const initialState: ThemeContextType = {
-  theme: "dark",
+  theme: "light",
   setTheme: () => null,
 };
 
@@ -22,7 +22,7 @@ const ThemeContext = createContext<ThemeContextType>(initialState);
 
 export function ThemeProvider({
   children,
-  defaultTheme = "dark",
+  defaultTheme = "light",
   storageKey = "ui-theme",
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(

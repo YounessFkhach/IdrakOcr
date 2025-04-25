@@ -1321,7 +1321,7 @@ export default function ProjectPage() {
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(2)}
-                className="rounded-full px-6"
+                className="rounded-sm px-6 paper-button"
               >
                 <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
@@ -1330,7 +1330,7 @@ export default function ProjectPage() {
               <Button
                 onClick={onFieldsSubmit}
                 disabled={formFields.length === 0 || updateFieldsMutation.isPending}
-                className="gap-1 rounded-full px-6 shadow-sm hover:shadow transition-shadow"
+                className="gap-1 rounded-sm px-6 shadow-sm hover:shadow transition-shadow paper-button"
               >
                 {updateFieldsMutation.isPending && <Loader2 className="h-5 w-5 animate-spin" />}
                 {t("projects.continue")}
@@ -1385,7 +1385,7 @@ export default function ProjectPage() {
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(3)}
-                className="rounded-full px-6"
+                className="rounded-sm px-6 paper-button"
               >
                 <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
@@ -1393,7 +1393,7 @@ export default function ProjectPage() {
               
               <Button
                 onClick={() => setCurrentStep(5)}
-                className="gap-1 rounded-full px-6 shadow-sm hover:shadow transition-shadow"
+                className="gap-1 rounded-sm px-6 shadow-sm hover:shadow transition-shadow paper-button"
               >
                 {t("projects.skipTest")}
                 <ArrowRight className="h-5 w-5 ml-1" />
@@ -1619,20 +1619,20 @@ export default function ProjectPage() {
       <Navbar />
       
       <main className="flex-grow">
-        {/* Hero section with gradient background */}
-        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background pt-28 pb-12">
+        {/* Hero section with paper-like texture */}
+        <div className="paper-hero bg-primary/5 pt-28 pb-12">
           <div className="container mx-auto px-4">
             <div className="flex flex-col">
               <Button 
                 variant="ghost" 
                 onClick={goBack} 
-                className="gap-1 w-fit rounded-full hover:bg-background/80 mb-6 -ml-2"
+                className="gap-1 w-fit rounded-sm hover:bg-background/80 mb-6 -ml-2 paper-button"
               >
                 <ArrowLeft className="h-4 w-4" />
                 {t("common.back")}
               </Button>
               
-              <h1 className="text-4xl font-bold mb-3">
+              <h1 className="text-4xl font-bold mb-3" style={{ fontFamily: "'Libre Baskerville', Georgia, serif" }}>
                 {isNewProject ? t("projects.createNew") : project?.name || ""}
               </h1>
               <p className="text-muted-foreground max-w-2xl">
