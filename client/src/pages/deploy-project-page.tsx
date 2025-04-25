@@ -116,33 +116,6 @@ export default function DeployProjectPage() {
     mutationFn: async () => {
       if (selectedFiles.length === 0) throw new Error(t("deploy.noFilesSelected"));
       
-      // Instead of throwing an error, set a default model if none exists
-      if (!hasPreferedModel && project) {
-        // Update the project with a default model preference
-        try {
-          await fetch(`/api/projects/${id}`, {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              preferredModel: "gemini" // Default to gemini
-            }),
-            credentials: "include"
-          });
-          // Update project data in state
-          if (project) {
-            project.preferredModel = "gemini";
-          }
-          toast({
-            title: t("deploy.modelAutoSelected"),
-            description: t("deploy.geminiSelectedAuto"),
-          });
-        } catch (error) {
-          console.error("Failed to set default model:", error);
-        }
-      }
-      
       const formData = new FormData();
       selectedFiles.forEach(file => {
         formData.append("images", file);
@@ -266,7 +239,29 @@ export default function DeployProjectPage() {
                 <div className="mt-6 text-center">
                   <Button
                     size="lg"
-                    onClick={() => deployMutation.mutate()}
+                    onClick={() => {
+                      // If no model is selected, automatically set one before processing
+                      if (!hasPreferedModel && project) {
+                        fetch(`/api/projects/${id}`, {
+                          method: "PATCH",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ preferredModel: "gemini" }),
+                          credentials: "include"
+                        }).then(() => {
+                          // Update project locally
+                          if (project) project.preferredModel = "gemini";
+                          // Start processing
+                          deployMutation.mutate();
+                          toast({
+                            title: t("deploy.modelAutoSelected"),
+                            description: t("deploy.geminiSelectedAuto")
+                          });
+                        });
+                      } else {
+                        // Process normally if model is already selected
+                        deployMutation.mutate();
+                      }
+                    }}
                     disabled={selectedFiles.length === 0 || deployMutation.isPending || isPolling}
                     className="px-8"
                   >
