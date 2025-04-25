@@ -259,14 +259,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
             }
           } else {
             // Handle if mergedFields is already an object
-            if (mergedFields.mergedFormFields && Array.isArray(mergedFields.mergedFormFields)) {
-              parsedFields = mergedFields.mergedFormFields;
+            if (mergedFields && typeof mergedFields === 'object' && 'mergedFormFields' in mergedFields && 
+                Array.isArray((mergedFields as any).mergedFormFields)) {
+              parsedFields = (mergedFields as any).mergedFormFields;
             } else if (Array.isArray(mergedFields)) {
               parsedFields = mergedFields;
-            } else {
+            } else if (mergedFields && typeof mergedFields === 'object') {
               // Look for any array property
               const arrayProps = Object.keys(mergedFields).filter(key => 
-                Array.isArray(mergedFields[key])
+                Array.isArray((mergedFields as any)[key])
               );
               
               if (arrayProps.length > 0) {

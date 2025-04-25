@@ -119,12 +119,16 @@ export const projectBasicInfoSchema = z.object({
 export const formFieldSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "Field name is required"),
-  label: z.string().min(1, "Field label is required"),
+  label: z.string().nullable().transform(val => val || ""), // Allow null labels but transform to empty string
   fieldType: z.enum(["text", "number", "date", "email", "tel", "checkbox", "radio", "select", "textarea"]),
   required: z.boolean().default(false),
-  options: z.string().optional(),
-  defaultValue: z.string().optional(),
-  placeholder: z.string().optional(),
+  options: z.union([z.string(), z.array(z.string()), z.null()]).optional().transform(val => 
+    typeof val === 'string' ? val : Array.isArray(val) ? JSON.stringify(val) : null
+  ),
+  defaultValue: z.union([z.string(), z.number(), z.boolean(), z.null()]).optional().transform(val => 
+    val === null ? "" : String(val)
+  ),
+  placeholder: z.union([z.string(), z.null()]).optional().transform(val => val || ""),
   validationRules: z.string().optional(),
   order: z.number(),
 });

@@ -455,12 +455,12 @@ export default function ProjectPage() {
   const openEditFieldDialog = (index: number) => {
     const field = formFields[index];
     fieldForm.reset({
-      name: field.name,
-      label: field.label,
+      name: field.name || "",
+      label: field.label || "", // Handle null label by providing empty string
       fieldType: field.fieldType,
       required: field.required || false,
-      options: field.options || "",
-      defaultValue: field.defaultValue || "",
+      options: typeof field.options === 'object' ? JSON.stringify(field.options) : (field.options || ""),
+      defaultValue: field.defaultValue === null ? "" : (field.defaultValue || ""),
       placeholder: field.placeholder || "",
     });
     setEditingFieldIndex(index);
@@ -468,12 +468,21 @@ export default function ProjectPage() {
   };
 
   const addOrUpdateField = (data: any) => {
+    // Sanitize the data to handle null values
+    const sanitizedData = {
+      ...data,
+      label: data.label || "", // Replace null with empty string
+      options: data.options || "",
+      defaultValue: data.defaultValue === null ? "" : data.defaultValue || "",
+      placeholder: data.placeholder || ""
+    };
+    
     if (editingFieldIndex !== null) {
       // Update existing field
       const updatedFields = [...formFields];
       updatedFields[editingFieldIndex] = {
         ...updatedFields[editingFieldIndex],
-        ...data,
+        ...sanitizedData,
         id: updatedFields[editingFieldIndex].id,
         order: updatedFields[editingFieldIndex].order,
       };
@@ -483,7 +492,7 @@ export default function ProjectPage() {
       setFormFields([
         ...formFields,
         {
-          ...data,
+          ...sanitizedData,
           id: Date.now(), // Temporary ID for UI purposes
           order: formFields.length + 1,
         },
