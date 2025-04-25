@@ -9,11 +9,15 @@ export async function extractTextWithOpenAI(base64Image: string): Promise<string
       model: "gpt-4o",
       messages: [
         {
+          role: "system",
+          content: "You are an OCR specialist that extracts text from images. Always respond with a JSON object that follows this structure: { \"text\": \"the extracted text in markdown format\", \"confidence\": 0.0-1.0, \"metadata\": { \"image_quality\": \"description of image quality\", \"content_type\": \"document type detected\" } }"
+        },
+        {
           role: "user",
           content: [
             {
               type: "text",
-              text: "Extract all text from this image. Format the result as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible."
+              text: "Extract all text from this image. Format the extracted text as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible. Return the result in JSON format."
             },
             {
               type: "image_url",
@@ -25,10 +29,15 @@ export async function extractTextWithOpenAI(base64Image: string): Promise<string
         },
       ],
       max_tokens: 1500,
+      response_format: { type: "json_object" },
     });
 
-    return response.choices[0].message.content || "No text extracted";
-  } catch (error) {
+    const content = response.choices[0].message.content;
+    if (!content) return JSON.stringify({ text: "No text extracted", confidence: 0, metadata: { error: "No content returned" } });
+    
+    // Return the JSON as a string
+    return content;
+  } catch (error: any) {
     console.error("OpenAI text extraction error:", error);
     throw new Error(`Failed to extract text with OpenAI: ${error.message}`);
   }
@@ -40,16 +49,38 @@ export async function compareAndMergeResults(
   customPrompt?: string
 ): Promise<string> {
   try {
+    // Parse the JSON responses if they are in JSON format
+    let geminiText = geminiData;
+    let gptText = gptData;
+    
+    try {
+      const geminiJson = JSON.parse(geminiData);
+      if (geminiJson && geminiJson.text) {
+        geminiText = geminiJson.text;
+      }
+    } catch (e) {
+      // Not JSON format, use as is
+    }
+    
+    try {
+      const gptJson = JSON.parse(gptData);
+      if (gptJson && gptJson.text) {
+        gptText = gptJson.text;
+      }
+    } catch (e) {
+      // Not JSON format, use as is
+    }
+    
     const prompt = customPrompt 
-      ? `${customPrompt}\n\nHere are two extractions of the same document:\n\nExtraction 1 (Gemini):\n${geminiData}\n\nExtraction 2 (GPT):\n${gptData}\n\nPlease analyze both extractions and create a merged, improved version that takes the most accurate parts from each.`
-      : `You are an expert OCR analyst. Here are two AI-extracted versions of the same document:\n\nExtraction 1 (Gemini):\n${geminiData}\n\nExtraction 2 (GPT):\n${gptData}\n\nPlease analyze both extractions and create a merged, improved version that takes the most accurate parts from each. Your goal is to produce the most complete and accurate representation of the original document. Format your response in markdown with appropriate headers, lists, tables, etc. to preserve the structure.`;
+      ? `${customPrompt}\n\nHere are two extractions of the same document:\n\nExtraction 1 (Gemini):\n${geminiText}\n\nExtraction 2 (GPT):\n${gptText}\n\nPlease analyze both extractions and create a merged, improved version that takes the most accurate parts from each.`
+      : `Here are two AI-extracted versions of the same document:\n\nExtraction 1 (Gemini):\n${geminiText}\n\nExtraction 2 (GPT):\n${gptText}\n\nAnalyze both extractions and create a merged, improved version that takes the most accurate parts from each. Your goal is to produce the most complete and accurate representation of the original document.`;
 
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [
         {
           role: "system",
-          content: "You are an OCR expert that compares multiple text extractions and creates the most accurate version."
+          content: "You are an OCR expert that compares multiple text extractions and creates the most accurate version. Always respond with a JSON object that follows this structure: { \"mergedText\": \"the merged text in markdown format\", \"analysis\": { \"geminiScore\": 0.0-1.0, \"gptScore\": 0.0-1.0, \"reasoning\": \"explanation of merge decisions\" } }"
         },
         {
           role: "user",
@@ -57,10 +88,21 @@ export async function compareAndMergeResults(
         }
       ],
       max_tokens: 1500,
+      response_format: { type: "json_object" },
     });
 
-    return response.choices[0].message.content || "Failed to merge results";
-  } catch (error) {
+    const content = response.choices[0].message.content;
+    if (!content) return JSON.stringify({ 
+      mergedText: "Failed to merge results", 
+      analysis: { 
+        geminiScore: 0, 
+        gptScore: 0, 
+        reasoning: "No content returned from AI" 
+      } 
+    });
+    
+    return content;
+  } catch (error: any) {
     console.error("OpenAI comparison error:", error);
     throw new Error(`Failed to compare and merge results with OpenAI: ${error.message}`);
   }
