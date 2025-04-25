@@ -202,6 +202,7 @@
     "customPromptHelp": "Customize how AI processes and extracts data from your documents",
     "createNew": "Create New Project",
     "defineNewProject": "Define the details for your new OCR extraction project",
+    "testResults": "Test Processing Results",
     "create": "Create Project",
     "editProject": "Edit Project",
     "updateProjectDetails": "Update your project details and custom prompts",
@@ -322,13 +323,18 @@
   "results": {
     "processing": "Processing Results",
     "processingWithAI": "Processing document with both AI models...",
-    "comparison": "Processing Results",
+    "comparison": "Field Extraction Comparison",
     "chooseBest": "Choose the best result:",
     "geminiResult": "Gemini Result",
     "openaiResult": "ChatGPT Result",
     "edit": "Edit Result",
     "useThisModel": "Use This Model",
+    "useGemini": "Select Gemini as Preferred Model",
+    "useOpenAI": "Select ChatGPT as Preferred Model",
     "modelSelected": "{{model}} Selected",
+    "modelSelectedDescription": "{{model}} has been selected as the preferred model for this project",
+    "modelSelectionFailed": "Model Selection Failed",
+    "noResultToSelect": "No processing result to select from",
     "noData": "No data available yet. Process a document to see results."
   },
   "upload": {

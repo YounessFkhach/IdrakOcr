@@ -435,6 +435,69 @@ export default function ProjectPage() {
     updateFieldsMutation.mutate(fieldsWithOrder);
   };
 
+  // Function to parse extracted fields for comparison table
+  const parseExtractedFields = (result: any) => {
+    if (!result) return [];
+    
+    // Parse Gemini and OpenAI results
+    const geminiData = parseJsonResult(result.geminiResult);
+    const openaiData = parseJsonResult(result.openaiResult);
+    
+    // Get all unique field names
+    const fieldNames = new Set([
+      ...Object.keys(geminiData || {}),
+      ...Object.keys(openaiData || {})
+    ]);
+    
+    // Create comparison rows
+    return Array.from(fieldNames).map(name => ({
+      name,
+      geminiValue: (geminiData && geminiData[name] !== undefined) ? 
+                   String(geminiData[name]) : null,
+      openaiValue: (openaiData && openaiData[name] !== undefined) ? 
+                   String(openaiData[name]) : null
+    }));
+  };
+
+  // Helper to safely parse JSON results
+  const parseJsonResult = (jsonString: string | null) => {
+    if (!jsonString) return null;
+    try {
+      return JSON.parse(jsonString);
+    } catch (e) {
+      console.error("Failed to parse JSON:", e);
+      return null;
+    }
+  };
+
+  // Model selection mutation
+  const selectModelMutation = useMutation({
+    mutationFn: async ({ id, model }: { id: number, model: string }) => {
+      const res = await apiRequest(
+        "POST", 
+        `/api/projects/${project?.id}/results/${id}/select`, 
+        { model }
+      );
+      return await res.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: t("results.modelSelected", { model: data.selectedResult === "gemini" ? "Gemini" : "ChatGPT" }),
+        description: t("results.modelSelectedDescription", { model: data.selectedResult === "gemini" ? "Gemini" : "ChatGPT" }),
+      });
+      
+      // Invalidate project data
+      queryClient.invalidateQueries({ queryKey: [`/api/projects/${id}`] });
+    },
+    onError: (error: Error) => {
+      toast({
+        title: t("results.modelSelectionFailed"),
+        description: error.message,
+        variant: "destructive",
+      });
+    },
+  });
+
   const onTestSubmit = (file: File) => {
     processTestMutation.mutate(file);
   };
@@ -1158,28 +1221,56 @@ export default function ProjectPage() {
                   <div className="border rounded-lg p-6 mb-4">
                     <h3 className="text-lg font-medium mb-4">{t("projects.testResults")}</h3>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="border rounded-lg p-4">
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                          {t("results.geminiResult")}
-                        </h4>
-                        <div className="bg-muted/50 rounded p-3 max-h-[300px] overflow-auto">
-                          <pre className="text-xs whitespace-pre-wrap">
-                            {processedResult.geminiResult || t("results.noData")}
-                          </pre>
-                        </div>
+                    <div className="mb-4">
+                      <h4 className="font-medium text-sm text-muted-foreground mb-2">
+                        {t("results.comparison")}
+                      </h4>
+                      <div className="overflow-x-auto border rounded-lg">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>{t("projects.fieldName")}</TableHead>
+                              <TableHead>{t("results.geminiResult")}</TableHead>
+                              <TableHead>{t("results.openaiResult")}</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {parseExtractedFields(processedResult).map((field, index) => (
+                              <TableRow key={index}>
+                                <TableCell className="font-medium">{field.name}</TableCell>
+                                <TableCell>{field.geminiValue || '-'}</TableCell>
+                                <TableCell>{field.openaiValue || '-'}</TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
                       </div>
-                      
-                      <div className="border rounded-lg p-4">
-                        <h4 className="font-medium text-sm text-muted-foreground mb-2">
-                          {t("results.openaiResult")}
-                        </h4>
-                        <div className="bg-muted/50 rounded p-3 max-h-[300px] overflow-auto">
-                          <pre className="text-xs whitespace-pre-wrap">
-                            {processedResult.openaiResult || t("results.noData")}
-                          </pre>
-                        </div>
-                      </div>
+                    </div>
+                    
+                    {/* Model selection buttons */}
+                    <div className="flex gap-4 mt-6">
+                      <Button 
+                        onClick={() => selectModelMutation.mutate({
+                          id: processedResult.id,
+                          model: "gemini"
+                        })}
+                        variant="outline"
+                        className="flex-1 border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700"
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        {t("results.useGemini")}
+                      </Button>
+                      <Button 
+                        onClick={() => selectModelMutation.mutate({
+                          id: processedResult.id, 
+                          model: "openai"
+                        })}
+                        variant="outline"
+                        className="flex-1 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700"
+                      >
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        {t("results.useOpenAI")}
+                      </Button>
                     </div>
                   </div>
                 )}
