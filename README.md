@@ -3,6 +3,9 @@
 
 Idrak OCR (from Arabic إدراك meaning "comprehension/perception") is an advanced OCR platform powered by dual AI engines - Gemini and ChatGPT - for unparalleled accuracy in text extraction and data structuring.
 
+![image](https://github.com/user-attachments/assets/64c95439-a80b-46c2-be66-80e8963d97d6)
+
+
 ## Features
 
 - **Dual AI Processing**: Parallel processing with Gemini and ChatGPT ensures the highest possible accuracy in text extraction
