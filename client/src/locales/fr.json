@@ -1,0 +1,341 @@
+{
+  "common": {
+    "back": "Retour",
+    "backToProjects": "Retour aux Projets",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "create": "Créer",
+    "actions": "Actions",
+    "retry": "Réessayer",
+    "loading": "Chargement...",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "confirm": "Confirmer",
+    "yes": "Oui",
+    "no": "Non",
+    "continue": "Continuer",
+    "complete": "Terminé"
+  },
+  "nav": {
+    "home": "Accueil",
+    "features": "Fonctionnalités",
+    "howItWorks": "Comment ça marche",
+    "pricing": "Tarifs",
+    "dashboard": "Tableau de bord",
+    "account": "Compte",
+    "settings": "Paramètres",
+    "projects": "Projets"
+  },
+  "language": {
+    "changed": "Langue modifiée",
+    "switchedTo": "Passé à {{language}}"
+  },
+  "auth": {
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "logout": "Déconnexion",
+    "loggingIn": "Connexion en cours...",
+    "loginSuccess": "Connexion réussie",
+    "loginFailed": "Échec de la connexion",
+    "welcomeBack": "Bon retour",
+    "logoutSuccess": "Déconnexion réussie",
+    "loggedOut": "Vous avez été déconnecté",
+    "logoutFailed": "Échec de la déconnexion",
+    "registerSuccess": "Inscription réussie",
+    "registerFailed": "Échec de l'inscription",
+    "accountCreated": "Votre compte a été créé",
+    "username": "Nom d'utilisateur",
+    "usernamePlaceholder": "Entrez votre nom d'utilisateur",
+    "password": "Mot de passe",
+    "passwordPlaceholder": "Entrez votre mot de passe",
+    "email": "Email",
+    "emailPlaceholder": "Entrez votre adresse email",
+    "name": "Nom",
+    "namePlaceholder": "Entrez votre nom complet",
+    "createAccount": "Créer un compte",
+    "creating": "Création du compte...",
+    "createYourAccount": "Créez votre compte",
+    "loginDescription": "Entrez vos identifiants pour accéder à votre compte",
+    "registerDescription": "Créez un nouveau compte pour commencer à utiliser nos services",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "alreadyHaveAccount": "Vous avez déjà un compte ?",
+    "forgotPassword": "Mot de passe oublié ?",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "hero": {
+      "dualAI": "Traitement IA Double",
+      "dualAIDesc": "Comparez les résultats de deux modèles d'IA pour une précision inégalée",
+      "accuracy": "Précision maximale",
+      "accuracyDesc": "Obtenez l'extraction de texte la plus précise à partir de n'importe quel document",
+      "testimonial": "OmniScan AI a transformé notre façon de traiter nos documents, nous faisant gagner d'innombrables heures de travail manuel avec une précision exceptionnelle.",
+      "learnMore": "En savoir plus sur nos fonctionnalités"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": {
+        "part1": "Transformez des images en",
+        "part2": "données structurées"
+      },
+      "subtitle": "Plateforme OCR avancée alimentée par deux moteurs d'IA - Gemini et ChatGPT - pour une précision inégalée dans l'extraction de texte et la structuration des données.",
+      "getStarted": "Commencer",
+      "seeDemo": "Voir la démo",
+      "accuracy": "précision",
+      "dualAI": "Traitement IA double"
+    },
+    "features": {
+      "title": "Fonctionnalités OCR avancées",
+      "subtitle": "Notre plateforme combine les dernières technologies d'IA pour extraire, analyser et structurer les données de n'importe quel document avec une précision sans précédent.",
+      "dualAI": {
+        "title": "Traitement IA Double",
+        "description": "Le traitement parallèle avec Gemini et ChatGPT assure la plus haute précision possible dans l'extraction de texte."
+      },
+      "comparison": {
+        "title": "Comparaison des résultats",
+        "description": "Comparez et choisissez entre les résultats de différents modèles d'IA pour obtenir l'extraction de données la plus précise."
+      },
+      "customPrompts": {
+        "title": "Instructions IA personnalisées",
+        "description": "Affinez le comportement de l'IA avec des instructions spécifiques adaptées à vos types de documents et besoins d'extraction."
+      },
+      "batch": {
+        "title": "Traitement par lots",
+        "description": "Traitez plusieurs documents à la fois pour des projets d'extraction de données à haut volume efficaces."
+      },
+      "structured": {
+        "title": "Sortie structurée",
+        "description": "Obtenez des résultats en markdown propre et formaté, prêt à être utilisé dans vos applications."
+      },
+      "multilingual": {
+        "title": "Support multilingue",
+        "description": "Traitez des documents dans plusieurs langues avec une précision et une efficacité égales."
+      }
+    },
+    "workflow": {
+      "title": "Comment ça marche",
+      "subtitle": "Notre flux de travail avancé à double IA garantit une précision maximale grâce à de multiples étapes de vérification",
+      "step1": {
+        "title": "Téléchargez des documents",
+        "description": "Téléchargez vos images ou documents nécessitant un traitement OCR"
+      },
+      "step2": {
+        "title": "Traitement IA double",
+        "description": "Gemini et ChatGPT traitent vos documents simultanément"
+      },
+      "step3": {
+        "title": "Comparaison des résultats",
+        "description": "Examinez et sélectionnez les résultats les plus précis entre les modèles d'IA"
+      },
+      "step4": {
+        "title": "Déploiement à grande échelle",
+        "description": "Traitez plusieurs documents avec votre modèle d'IA préféré"
+      }
+    },
+    "pricing": {
+      "title": "Tarification simple et transparente",
+      "subtitle": "Choisissez le forfait qui convient à vos besoins, sans frais cachés",
+      "monthly": "/mois",
+      "choosePlan": "Choisir ce forfait",
+      "mostPopular": "Le plus populaire",
+      "starter": {
+        "title": "Débutant",
+        "price": "29€",
+        "feature1": "100 pages par mois",
+        "feature2": "Traitement IA double",
+        "feature3": "Gestion de projet basique",
+        "feature4": "Instructions IA personnalisées",
+        "feature5": "Traitement par lots"
+      },
+      "pro": {
+        "title": "Professionnel",
+        "price": "79€",
+        "feature1": "500 pages par mois",
+        "feature2": "Traitement IA double",
+        "feature3": "Gestion de projet avancée",
+        "feature4": "Instructions IA personnalisées",
+        "feature5": "Traitement par lots"
+      },
+      "enterprise": {
+        "title": "Entreprise",
+        "price": "199€",
+        "feature1": "2 000 pages par mois",
+        "feature2": "Traitement IA double",
+        "feature3": "Gestion de projet avancée",
+        "feature4": "Instructions IA personnalisées",
+        "feature5": "Traitement par lots"
+      }
+    },
+    "demo": {
+      "title": "Voyez-le en action",
+      "subtitle": "Regardez comment OmniScan AI extrait et structure les données de documents réels",
+      "videoTitle": "Démo de traitement de documents",
+      "videoDescription": "Regardez notre plateforme extraire des données de factures, reçus et contrats avec une précision inégalée en utilisant un traitement IA double."
+    },
+    "cta": {
+      "title": "Prêt à transformer votre traitement de documents ?",
+      "subtitle": "Rejoignez des milliers d'entreprises qui ont automatisé leur extraction de données avec OmniScan AI",
+      "startTrial": "Commencer l'essai gratuit",
+      "contactSales": "Contacter les ventes"
+    }
+  },
+  "dashboard": {
+    "myProjects": "Mes projets",
+    "manageProjects": "Gérez vos projets d'extraction OCR",
+    "newProject": "Nouveau projet",
+    "createNewProject": "Créer un nouveau projet",
+    "createProject": "Créer un projet",
+    "createFirstProject": "Créez votre premier projet",
+    "noProjects": "Pas encore de projets",
+    "noProjectsDescription": "Commencez par créer votre premier projet d'extraction OCR",
+    "errorLoading": "Erreur lors du chargement des projets"
+  },
+  "projects": {
+    "name": "Nom du projet",
+    "namePlaceholder": "Entrez un nom pour votre projet",
+    "description": "Description",
+    "descriptionPlaceholder": "Décrivez l'objectif de ce projet",
+    "descriptionHelp": "Une brève description de l'objectif de ce projet",
+    "customPrompt": "Instruction IA personnalisée",
+    "customPromptPlaceholder": "Entrez des instructions spécifiques pour l'IA pour extraire et structurer les données",
+    "customPromptHelp": "Personnalisez la façon dont l'IA traite et extrait les données de vos documents",
+    "createNew": "Créer un nouveau projet",
+    "defineNewProject": "Définissez les détails de votre nouveau projet d'extraction OCR",
+    "create": "Créer le projet",
+    "editProject": "Modifier le projet",
+    "updateProjectDetails": "Mettez à jour les détails de votre projet et les instructions personnalisées",
+    "edit": "Modifier le projet",
+    "save": "Enregistrer les modifications",
+    "test": "Tester le projet",
+    "delete": "Supprimer le projet",
+    "openTest": "Tester le projet",
+    "openDeploy": "Déployer le projet",
+    "noDescription": "Aucune description fournie",
+    "noModelSelected": "Aucun modèle sélectionné",
+    "confirmDelete": "Confirmer la suppression",
+    "deleteWarning": "Êtes-vous sûr de vouloir supprimer ce projet ? Cette action ne peut pas être annulée.",
+    "errorLoading": "Erreur lors du chargement du projet",
+    "createSuccess": "Projet créé",
+    "projectCreated": "Le projet {{name}} a été créé avec succès",
+    "createFailed": "Échec de la création du projet",
+    "updateSuccess": "Projet mis à jour",
+    "projectUpdated": "Le projet {{name}} a été mis à jour avec succès",
+    "updateFailed": "Échec de la mise à jour du projet",
+    "deleteSuccess": "Projet supprimé",
+    "projectDeleted": "Le projet a été supprimé avec succès",
+    "deleteFailed": "Échec de la suppression du projet",
+    "promptUpdateSuccess": "Instruction mise à jour",
+    "promptUpdated": "L'instruction IA personnalisée a été mise à jour avec succès",
+    "promptUpdateFailed": "Échec de la mise à jour de l'instruction"
+  },
+  "test": {
+    "testProcessing": "Test de traitement",
+    "testDescription": "Testez votre traitement OCR avec un document échantillon",
+    "uploadTestDocument": "Télécharger un document test",
+    "customAIPrompt": "Instruction IA personnalisée",
+    "promptPlaceholder": "Extraire les champs suivants du document : numéro de facture, date, nom de l'entreprise, articles, sous-total, taxe, montant total.",
+    "savePrompt": "Enregistrer l'instruction",
+    "processDocument": "Traiter le document",
+    "processingComplete": "Traitement terminé",
+    "resultsReady": "Les résultats sont prêts à être examinés",
+    "processingFailed": "Échec du traitement",
+    "noImageSelected": "Aucune image sélectionnée",
+    "modelSelected": "Modèle sélectionné",
+    "modelSelectedDescription": "{{model}} a été sélectionné comme modèle préféré pour ce projet",
+    "modelSelectionFailed": "Échec de la sélection du modèle",
+    "noResultToSelect": "Aucun résultat de traitement à sélectionner",
+    "proceedToDeploy": "Passer au déploiement"
+  },
+  "results": {
+    "processing": "Traitement des résultats",
+    "processingWithAI": "Traitement du document avec les deux modèles d'IA...",
+    "comparison": "Résultats du traitement",
+    "chooseBest": "Choisissez le meilleur résultat :",
+    "geminiResult": "Résultat Gemini",
+    "openaiResult": "Résultat ChatGPT",
+    "edit": "Modifier le résultat",
+    "useThisModel": "Utiliser ce modèle",
+    "modelSelected": "{{model}} sélectionné",
+    "noData": "Aucune donnée disponible pour le moment. Traitez un document pour voir les résultats."
+  },
+  "upload": {
+    "title": "Télécharger un document",
+    "dragDrop": "Glissez et déposez une image ici, ou cliquez pour parcourir",
+    "supportedFormats": "Supporte JPG, PNG, PDF jusqu'à {{size}}MB",
+    "browse": "Parcourir les fichiers",
+    "addMore": "Ajouter plus de fichiers",
+    "invalidType": "Type de fichier invalide",
+    "acceptedTypes": "Types de fichiers acceptés : {{types}}",
+    "fileTooBig": "Fichier trop volumineux",
+    "maxSize": "La taille maximale de fichier est de {{size}}MB"
+  },
+  "deploy": {
+    "deployment": "Déploiement",
+    "processMultipleFiles": "Traitez plusieurs documents en utilisant votre modèle {{model}} sélectionné",
+    "noModelWarning": "Vous devez tester et sélectionner un modèle préféré avant de déployer",
+    "uploadDocuments": "Télécharger des documents",
+    "dragDropMultiple": "Glissez et déposez plusieurs images ici pour les traiter par lots",
+    "startProcessing": "Démarrer le traitement",
+    "processingSettings": "Paramètres de traitement",
+    "selectedModel": "Modèle IA sélectionné",
+    "default": "Par défaut",
+    "noModelSelected": "Aucun modèle sélectionné",
+    "outputFormat": "Format de sortie",
+    "selectFormat": "Sélectionner un format",
+    "saveResults": "Enregistrer les résultats dans le projet",
+    "enableBatchOptimization": "Activer l'optimisation par lots",
+    "processingQueue": "File d'attente de traitement",
+    "clearAll": "Tout effacer",
+    "processingProgress": "{{completed}} sur {{total}} documents traités",
+    "noFilesInQueue": "Aucun fichier dans la file d'attente de traitement",
+    "results": "Résultats",
+    "exportAll": "Tout exporter",
+    "completedResults": "{{count}} documents terminés",
+    "noResultsYet": "Aucun résultat disponible pour le moment",
+    "noContentAvailable": "Aucun contenu disponible",
+    "waitingForResults": "En attente des résultats de traitement...",
+    "uploadAndProcess": "Téléchargez des fichiers et démarrez le traitement pour voir les résultats",
+    "complete": "terminé",
+    "estimatedTime": "Temps estimé pour terminer : {{minutes}} minutes",
+    "calculatingEta": "Calcul du temps estimé...",
+    "processingStarted": "Traitement démarré",
+    "processingDescription": "Commencé à traiter {{count}} documents en arrière-plan",
+    "processingComplete": "Traitement terminé",
+    "allDocumentsProcessed": "Tous les documents ont été traités avec succès",
+    "processingFailed": "Échec du traitement",
+    "noFilesSelected": "Aucun fichier sélectionné pour le traitement",
+    "noModelSelected": "Aucun modèle préféré n'a été sélectionné. Veuillez tester et sélectionner un modèle d'abord."
+  },
+  "queue": {
+    "complete": "Terminé",
+    "processing": "En cours",
+    "failed": "Échoué",
+    "queued": "En attente",
+    "position": "Position : {{position}} dans la file",
+    "errorLoading": "Erreur lors du chargement de la file d'attente",
+    "noFilesInQueue": "Aucun fichier dans la file d'attente",
+    "processingTime": "Traité en {{time}}"
+  },
+  "footer": {
+    "description": "Plateforme OCR avancée alimentée par une technologie IA double pour une précision inégalée dans l'extraction de texte et la structuration des données.",
+    "product": "Produit",
+    "features": "Fonctionnalités",
+    "pricing": "Tarifs",
+    "api": "API",
+    "integrations": "Intégrations",
+    "resources": "Ressources",
+    "documentation": "Documentation",
+    "guides": "Guides",
+    "blog": "Blog",
+    "support": "Support",
+    "company": "Entreprise",
+    "about": "À propos",
+    "careers": "Carrières",
+    "contact": "Contact",
+    "privacy": "Confidentialité",
+    "terms": "Conditions d'utilisation",
+    "cookies": "Cookies",
+    "allRightsReserved": "Tous droits réservés."
+  }
+}

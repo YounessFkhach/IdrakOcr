@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 265 90% 76%;
+  --primary-foreground: 0 0% 10%;
+  --secondary: 175 84% 32%;
+  --secondary-foreground: 0 0% 98%;
+  --accent: 240 3.7% 15.9%;
+  --accent-foreground: 0 0% 98%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 265 90% 76%; 
+  --radius: 1rem;
+  
+  --chart-1: 265 90% 76%;
+  --chart-2: 175 84% 32%;
+  --chart-3: 320 70% 66%;
+  --chart-4: 220 70% 50%;
+  --chart-5: 40 80% 50%;
+  
+  --sidebar-background: 240 10% 3.9%;
+  --sidebar-foreground: 0 0% 98%;
+  --sidebar-primary: 265 90% 76%;
+  --sidebar-primary-foreground: 0 0% 10%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 0 0% 98%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 265 90% 76%;
+}
+
+.light {
+  --background: 0 0% 100%;
+  --foreground: 20 14.3% 4.1%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 14.3% 4.1%;
+  --card: 0 0% 100%;
+  --card-foreground: 20 14.3% 4.1%;
+  --border: 20 5.9% 90%;
+  --input: 20 5.9% 90%;
+  --primary: 265 90% 43%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 175 84% 32%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 60 4.8% 95.9%;
+  --accent-foreground: 24 9.8% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 60 9.1% 97.8%;
+  --ring: 265 90% 43%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Roboto", -apple-system, system-ui, sans-serif;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Google Sans", "Roboto", -apple-system, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary;
+  }
+  
+  .material-card {
+    @apply bg-card rounded-xl shadow-md transition-all duration-300 hover:shadow-lg;
+  }
+  
+  .image-drop-area {
+    @apply border-2 border-dashed border-muted rounded-xl min-h-[200px] transition-all duration-300;
+  }
+  
+  .image-drop-area:hover, .image-drop-area.active {
+    @apply border-primary bg-primary/5;
+  }
+  
+  .hero-blob {
+    @apply absolute w-[800px] h-[800px] top-[-350px] right-[-350px] rounded-full;
+    background: radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, hsl(var(--secondary) / 0.1) 50%, transparent 70%);
+    filter: blur(80px);
+    z-index: -1;
+  }
+}

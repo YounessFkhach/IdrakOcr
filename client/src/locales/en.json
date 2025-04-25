@@ -1,0 +1,341 @@
+{
+  "common": {
+    "back": "Back",
+    "backToProjects": "Back to Projects",
+    "cancel": "Cancel",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "actions": "Actions",
+    "retry": "Retry",
+    "loading": "Loading...",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "continue": "Continue",
+    "complete": "Complete"
+  },
+  "nav": {
+    "home": "Home",
+    "features": "Features",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "settings": "Settings",
+    "projects": "Projects"
+  },
+  "language": {
+    "changed": "Language Changed",
+    "switchedTo": "Switched to {{language}}"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "loggingIn": "Logging in...",
+    "loginSuccess": "Login Successful",
+    "loginFailed": "Login Failed",
+    "welcomeBack": "Welcome back",
+    "logoutSuccess": "Logout Successful",
+    "loggedOut": "You have been logged out",
+    "logoutFailed": "Logout Failed",
+    "registerSuccess": "Registration Successful",
+    "registerFailed": "Registration Failed",
+    "accountCreated": "Your account has been created",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "email": "Email",
+    "emailPlaceholder": "Enter your email address",
+    "name": "Name",
+    "namePlaceholder": "Enter your full name",
+    "createAccount": "Create Account",
+    "creating": "Creating account...",
+    "createYourAccount": "Create your account",
+    "loginDescription": "Enter your credentials to access your account",
+    "registerDescription": "Create a new account to start using our services",
+    "noAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "forgotPassword": "Forgot password?",
+    "resetPassword": "Reset Password",
+    "hero": {
+      "dualAI": "Dual AI Processing",
+      "dualAIDesc": "Compare results from two AI models for unmatched accuracy",
+      "accuracy": "Highest Accuracy",
+      "accuracyDesc": "Get the most precise text extraction from any document",
+      "testimonial": "OmniScan AI has transformed how we process our documents, saving us countless hours of manual work with exceptional accuracy.",
+      "learnMore": "Learn more about our features"
+    }
+  },
+  "home": {
+    "hero": {
+      "title": {
+        "part1": "Turn images into",
+        "part2": "structured data"
+      },
+      "subtitle": "Advanced OCR platform powered by dual AI engines - Gemini and ChatGPT - for unparalleled accuracy in text extraction and data structuring.",
+      "getStarted": "Get Started",
+      "seeDemo": "See Demo",
+      "accuracy": "accuracy",
+      "dualAI": "Dual AI processing"
+    },
+    "features": {
+      "title": "Advanced OCR Features",
+      "subtitle": "Our platform combines the latest AI technologies to extract, analyze, and structure data from any document with unprecedented accuracy.",
+      "dualAI": {
+        "title": "Dual AI Processing",
+        "description": "Parallel processing with both Gemini and ChatGPT ensures the highest possible accuracy in text extraction."
+      },
+      "comparison": {
+        "title": "Result Comparison",
+        "description": "Compare and choose between results from different AI models to get the most accurate data extraction."
+      },
+      "customPrompts": {
+        "title": "Custom AI Prompts",
+        "description": "Fine-tune AI behavior with custom prompts specific to your document types and extraction needs."
+      },
+      "batch": {
+        "title": "Batch Processing",
+        "description": "Process multiple documents at once for efficient high-volume data extraction projects."
+      },
+      "structured": {
+        "title": "Structured Output",
+        "description": "Get results in clean, formatted markdown that's ready to use in your applications."
+      },
+      "multilingual": {
+        "title": "Multilingual Support",
+        "description": "Process documents in multiple languages with equal accuracy and efficiency."
+      }
+    },
+    "workflow": {
+      "title": "How It Works",
+      "subtitle": "Our advanced dual-AI workflow ensures maximum accuracy through multiple verification steps",
+      "step1": {
+        "title": "Upload Documents",
+        "description": "Upload your images or documents that need OCR processing"
+      },
+      "step2": {
+        "title": "Dual AI Processing",
+        "description": "Both Gemini and ChatGPT process your documents simultaneously"
+      },
+      "step3": {
+        "title": "Result Comparison",
+        "description": "Review and select the most accurate results between AI models"
+      },
+      "step4": {
+        "title": "Deploy at Scale",
+        "description": "Process multiple documents with your preferred AI model"
+      }
+    },
+    "pricing": {
+      "title": "Simple, Transparent Pricing",
+      "subtitle": "Choose the plan that works for your needs, with no hidden fees",
+      "monthly": "/month",
+      "choosePlan": "Choose Plan",
+      "mostPopular": "Most Popular",
+      "starter": {
+        "title": "Starter",
+        "price": "$29",
+        "feature1": "100 pages per month",
+        "feature2": "Dual AI processing",
+        "feature3": "Basic project management",
+        "feature4": "Custom AI prompts",
+        "feature5": "Batch processing"
+      },
+      "pro": {
+        "title": "Professional",
+        "price": "$79",
+        "feature1": "500 pages per month",
+        "feature2": "Dual AI processing",
+        "feature3": "Advanced project management",
+        "feature4": "Custom AI prompts",
+        "feature5": "Batch processing"
+      },
+      "enterprise": {
+        "title": "Enterprise",
+        "price": "$199",
+        "feature1": "2,000 pages per month",
+        "feature2": "Dual AI processing",
+        "feature3": "Advanced project management",
+        "feature4": "Custom AI prompts",
+        "feature5": "Batch processing"
+      }
+    },
+    "demo": {
+      "title": "See It In Action",
+      "subtitle": "Watch how OmniScan AI extracts and structures data from real documents",
+      "videoTitle": "Document Processing Demo",
+      "videoDescription": "Watch our platform extract data from invoices, receipts, and contracts with unparalleled accuracy using dual AI processing."
+    },
+    "cta": {
+      "title": "Ready to Transform Your Document Processing?",
+      "subtitle": "Join thousands of businesses that have automated their data extraction with OmniScan AI",
+      "startTrial": "Start Free Trial",
+      "contactSales": "Contact Sales"
+    }
+  },
+  "dashboard": {
+    "myProjects": "My Projects",
+    "manageProjects": "Manage your OCR extraction projects",
+    "newProject": "New Project",
+    "createNewProject": "Create a new project",
+    "createProject": "Create Project",
+    "createFirstProject": "Create Your First Project",
+    "noProjects": "No Projects Yet",
+    "noProjectsDescription": "Get started by creating your first OCR extraction project",
+    "errorLoading": "Error loading projects"
+  },
+  "projects": {
+    "name": "Project Name",
+    "namePlaceholder": "Enter a name for your project",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe what this project is for",
+    "descriptionHelp": "A brief description of the purpose of this project",
+    "customPrompt": "Custom AI Prompt",
+    "customPromptPlaceholder": "Enter specific instructions for the AI to extract and structure data",
+    "customPromptHelp": "Customize how AI processes and extracts data from your documents",
+    "createNew": "Create New Project",
+    "defineNewProject": "Define the details for your new OCR extraction project",
+    "create": "Create Project",
+    "editProject": "Edit Project",
+    "updateProjectDetails": "Update your project details and custom prompts",
+    "edit": "Edit Project",
+    "save": "Save Changes",
+    "test": "Test Project",
+    "delete": "Delete Project",
+    "openTest": "Test Project",
+    "openDeploy": "Deploy Project",
+    "noDescription": "No description provided",
+    "noModelSelected": "No model selected",
+    "confirmDelete": "Confirm Deletion",
+    "deleteWarning": "Are you sure you want to delete this project? This action cannot be undone.",
+    "errorLoading": "Error loading project",
+    "createSuccess": "Project Created",
+    "projectCreated": "Project {{name}} has been created successfully",
+    "createFailed": "Failed to Create Project",
+    "updateSuccess": "Project Updated",
+    "projectUpdated": "Project {{name}} has been updated successfully",
+    "updateFailed": "Failed to Update Project",
+    "deleteSuccess": "Project Deleted",
+    "projectDeleted": "Project has been deleted successfully",
+    "deleteFailed": "Failed to Delete Project",
+    "promptUpdateSuccess": "Prompt Updated",
+    "promptUpdated": "Custom AI prompt has been updated successfully",
+    "promptUpdateFailed": "Failed to Update Prompt"
+  },
+  "test": {
+    "testProcessing": "Test Processing",
+    "testDescription": "Test your OCR processing with a sample document",
+    "uploadTestDocument": "Upload Test Document",
+    "customAIPrompt": "Custom AI Prompt",
+    "promptPlaceholder": "Extract the following fields from the document: invoice number, date, company name, line items, subtotal, tax, total amount.",
+    "savePrompt": "Save Prompt",
+    "processDocument": "Process Document",
+    "processingComplete": "Processing Complete",
+    "resultsReady": "Results are ready for review",
+    "processingFailed": "Processing Failed",
+    "noImageSelected": "No image selected",
+    "modelSelected": "Model Selected",
+    "modelSelectedDescription": "{{model}} has been selected as the preferred model for this project",
+    "modelSelectionFailed": "Model Selection Failed",
+    "noResultToSelect": "No processing result to select from",
+    "proceedToDeploy": "Proceed to Deployment"
+  },
+  "results": {
+    "processing": "Processing Results",
+    "processingWithAI": "Processing document with both AI models...",
+    "comparison": "Processing Results",
+    "chooseBest": "Choose the best result:",
+    "geminiResult": "Gemini Result",
+    "openaiResult": "ChatGPT Result",
+    "edit": "Edit Result",
+    "useThisModel": "Use This Model",
+    "modelSelected": "{{model}} Selected",
+    "noData": "No data available yet. Process a document to see results."
+  },
+  "upload": {
+    "title": "Upload Document",
+    "dragDrop": "Drag and drop an image here, or click to browse",
+    "supportedFormats": "Supports JPG, PNG, PDF up to {{size}}MB",
+    "browse": "Browse Files",
+    "addMore": "Add More Files",
+    "invalidType": "Invalid File Type",
+    "acceptedTypes": "Accepted file types: {{types}}",
+    "fileTooBig": "File Too Large",
+    "maxSize": "Maximum file size is {{size}}MB"
+  },
+  "deploy": {
+    "deployment": "Deployment",
+    "processMultipleFiles": "Process multiple documents using your selected {{model}} model",
+    "noModelWarning": "You need to test and select a preferred model before deploying",
+    "uploadDocuments": "Upload Documents",
+    "dragDropMultiple": "Drag and drop multiple images here to process in batch",
+    "startProcessing": "Start Processing",
+    "processingSettings": "Processing Settings",
+    "selectedModel": "Selected AI Model",
+    "default": "Default",
+    "noModelSelected": "No Model Selected",
+    "outputFormat": "Output Format",
+    "selectFormat": "Select format",
+    "saveResults": "Save results to project",
+    "enableBatchOptimization": "Enable batch optimization",
+    "processingQueue": "Processing Queue",
+    "clearAll": "Clear All",
+    "processingProgress": "{{completed}} of {{total}} documents processed",
+    "noFilesInQueue": "No files in processing queue",
+    "results": "Results",
+    "exportAll": "Export All",
+    "completedResults": "{{count}} completed documents",
+    "noResultsYet": "No results available yet",
+    "noContentAvailable": "No content available",
+    "waitingForResults": "Waiting for processing results...",
+    "uploadAndProcess": "Upload files and start processing to see results",
+    "complete": "complete",
+    "estimatedTime": "Estimated completion: {{minutes}} minutes",
+    "calculatingEta": "Calculating estimated time...",
+    "processingStarted": "Processing Started",
+    "processingDescription": "Started processing {{count}} documents in the background",
+    "processingComplete": "Processing Complete",
+    "allDocumentsProcessed": "All documents have been processed successfully",
+    "processingFailed": "Processing Failed",
+    "noFilesSelected": "No files selected for processing",
+    "noModelSelected": "No preferred model has been selected. Please test and select a model first."
+  },
+  "queue": {
+    "complete": "Complete",
+    "processing": "Processing",
+    "failed": "Failed",
+    "queued": "Queued",
+    "position": "Position: {{position}} in queue",
+    "errorLoading": "Error loading queue",
+    "noFilesInQueue": "No files in queue",
+    "processingTime": "Processed in {{time}}"
+  },
+  "footer": {
+    "description": "Advanced OCR platform powered by dual AI technology for unparalleled accuracy in text extraction and data structuring.",
+    "product": "Product",
+    "features": "Features",
+    "pricing": "Pricing",
+    "api": "API",
+    "integrations": "Integrations",
+    "resources": "Resources",
+    "documentation": "Documentation",
+    "guides": "Guides",
+    "blog": "Blog",
+    "support": "Support",
+    "company": "Company",
+    "about": "About",
+    "careers": "Careers",
+    "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms of Service",
+    "cookies": "Cookies",
+    "allRightsReserved": "All rights reserved."
+  }
+}
