@@ -1340,7 +1340,7 @@ export default function ProjectPage() {
                     <div className="flex gap-4 mt-6">
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: Number(processedResult?.id),
+                          resultId: Number(processedResult?.id),
                           model: "gemini"
                         })}
                         variant="outline"
@@ -1351,7 +1351,7 @@ export default function ProjectPage() {
                       </Button>
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: Number(processedResult?.id),
+                          resultId: Number(processedResult?.id),
                           model: "openai"
                         })}
                         variant="outline"
