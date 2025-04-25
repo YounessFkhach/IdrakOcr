@@ -43,7 +43,8 @@ import {
   Plus,
   X,
   Check,
-  Info
+  Info,
+  Minus
 } from "lucide-react";
 import {
   Form,
@@ -683,6 +684,63 @@ export default function ProjectPage() {
                     </div>
                   )}
                 </div>
+                
+                {/* Display detected fields preview after detection */}
+                {project && project.status === "field_detection" && formFields.length > 0 && (
+                  <div className="mt-6 border rounded-lg p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-medium">{t("projects.detectedFields")}</h3>
+                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                        {formFields.length} {t("projects.fieldsDetected")}
+                      </Badge>
+                    </div>
+                    
+                    <div className="overflow-x-auto border rounded-lg">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>{t("projects.fieldName")}</TableHead>
+                            <TableHead>{t("projects.label")}</TableHead>
+                            <TableHead>{t("projects.type")}</TableHead>
+                            <TableHead>{t("projects.required")}</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {formFields.slice(0, 3).map((field, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-medium">{field.name}</TableCell>
+                              <TableCell>{field.label}</TableCell>
+                              <TableCell>{field.fieldType}</TableCell>
+                              <TableCell>
+                                {field.required ? (
+                                  <Check className="h-4 w-4 text-green-500" />
+                                ) : (
+                                  <Minus className="h-4 w-4 text-gray-300" />
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                    
+                    {formFields.length > 3 && (
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {t("projects.andMoreFields", { count: formFields.length - 3 })}
+                      </p>
+                    )}
+                    
+                    <div className="mt-4">
+                      <Button
+                        onClick={() => setCurrentStep(3)}
+                        className="gap-1"
+                      >
+                        <ArrowRight className="h-4 w-4 mr-1" />
+                        {t("projects.continueToEditFields")}
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">

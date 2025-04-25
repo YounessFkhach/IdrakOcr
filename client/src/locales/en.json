@@ -295,7 +295,11 @@
     "backToDashboard": "Back to Dashboard",
     "fieldsNotArray": "Form fields data is invalid",
     "noFieldsData": "No field data available",
-    "invalidFormFields": "Invalid form fields data"
+    "invalidFormFields": "Invalid form fields data",
+    "detectedFields": "Detected Fields",
+    "fieldsDetected": "Fields Detected",
+    "andMoreFields": "...and {{count}} more fields",
+    "continueToEditFields": "Continue to Edit Fields"
   },
   "test": {
     "testProcessing": "Test Processing",
