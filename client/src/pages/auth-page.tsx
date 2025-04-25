@@ -40,11 +40,6 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
   
-  // Redirect if already logged in
-  if (user) {
-    return <Redirect to="/dashboard" />;
-  }
-  
   // Login form
   const loginForm = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -53,10 +48,6 @@ export default function AuthPage() {
       password: "",
     },
   });
-  
-  const onLoginSubmit = (values: z.infer<typeof loginSchema>) => {
-    loginMutation.mutate(values);
-  };
   
   // Register form
   const registerForm = useForm<z.infer<typeof registerSchema>>({
@@ -68,6 +59,15 @@ export default function AuthPage() {
       name: "",
     },
   });
+  
+  // Redirect if already logged in - IMPORTANT: all hooks must be called before this return
+  if (user) {
+    return <Redirect to="/dashboard" />;
+  }
+  
+  const onLoginSubmit = (values: z.infer<typeof loginSchema>) => {
+    loginMutation.mutate(values);
+  };
   
   const onRegisterSubmit = (values: z.infer<typeof registerSchema>) => {
     registerMutation.mutate(values);
