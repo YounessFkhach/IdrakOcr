@@ -270,13 +270,38 @@ export default function ProjectPage() {
       // Update form fields from detection
       if (data.fields) {
         try {
-          const detectedFields = typeof data.fields === 'string' 
+          // Parse the fields if they are a string
+          const parsedData = typeof data.fields === 'string' 
             ? JSON.parse(data.fields) 
             : data.fields;
+          
+          // Check if we have a direct array or if it's nested in a mergedFormFields property
+          let detectedFields;
+          if (Array.isArray(parsedData)) {
+            detectedFields = parsedData;
+          } else if (parsedData.mergedFormFields && Array.isArray(parsedData.mergedFormFields)) {
+            detectedFields = parsedData.mergedFormFields;
+          } else {
+            // Try to find any array property in the object
+            const arrayProps = Object.keys(parsedData).filter(key => 
+              Array.isArray(parsedData[key])
+            );
             
+            if (arrayProps.length > 0) {
+              detectedFields = parsedData[arrayProps[0]];
+            } else {
+              throw new Error("No valid field array found in response");
+            }
+          }
+          
           setFormFields(detectedFields);
         } catch (e) {
           console.error("Error parsing detected fields:", e);
+          toast({
+            title: t("common.error"),
+            description: t("projects.invalidFormFields"),
+            variant: "destructive",
+          });
         }
       }
 
