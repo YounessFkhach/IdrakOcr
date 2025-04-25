@@ -200,9 +200,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
         );
         
         // Parse the fields
-        let formattedFields = mergedFields;
-        if (typeof formattedFields !== 'string') {
-          formattedFields = JSON.stringify(formattedFields);
+        let parsedFields;
+        let formattedFields;
+        
+        try {
+          // Try to parse if it's already a string
+          if (typeof mergedFields === 'string') {
+            const parsed = JSON.parse(mergedFields);
+            
+            // Check for nested arrays in special properties
+            if (parsed.mergedFormFields && Array.isArray(parsed.mergedFormFields)) {
+              parsedFields = parsed.mergedFormFields;
+            } else if (Array.isArray(parsed)) {
+              parsedFields = parsed;
+            } else {
+              // Look for any array property
+              const arrayProps = Object.keys(parsed).filter(key => 
+                Array.isArray(parsed[key])
+              );
+              
+              if (arrayProps.length > 0) {
+                parsedFields = parsed[arrayProps[0]];
+              } else {
+                // Create a default fields array if nothing else works
+                console.error("Couldn't find field array in the response");
+                parsedFields = [];
+              }
+            }
+          } else {
+            // Handle if mergedFields is already an object
+            if (mergedFields.mergedFormFields && Array.isArray(mergedFields.mergedFormFields)) {
+              parsedFields = mergedFields.mergedFormFields;
+            } else if (Array.isArray(mergedFields)) {
+              parsedFields = mergedFields;
+            } else {
+              // Look for any array property
+              const arrayProps = Object.keys(mergedFields).filter(key => 
+                Array.isArray(mergedFields[key])
+              );
+              
+              if (arrayProps.length > 0) {
+                parsedFields = mergedFields[arrayProps[0]];
+              } else {
+                // Create a default fields array if nothing else works
+                console.error("Couldn't find field array in the response");
+                parsedFields = [];
+              }
+            }
+          }
+          
+          // Ensure we have an array at this point
+          if (!Array.isArray(parsedFields)) {
+            console.error("parsedFields is not an array:", parsedFields);
+            parsedFields = [];
+          }
+          
+          // Convert to string for storage
+          formattedFields = JSON.stringify(parsedFields);
+        } catch (error) {
+          console.error("Error parsing field detection result:", error);
+          formattedFields = "[]";
         }
         
         // Update the project with detected fields and example image
