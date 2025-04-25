@@ -31,7 +31,7 @@ export async function extractTextWithGemini(base64Image: string): Promise<string
   try {
     // For Gemini Vision
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-pro-exp-03-25",
+      model: "gemini-1.5-pro-latest",
       generationConfig: {
         responseMimeType: "application/json"
       }
@@ -119,7 +119,7 @@ export async function compareAndMergeResults(
     }
     
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.5-pro-exp-03-25",
+      model: "gemini-1.5-pro-latest",
       generationConfig: {
         responseMimeType: "application/json"
       }
