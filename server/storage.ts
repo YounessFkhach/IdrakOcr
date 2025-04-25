@@ -28,11 +28,11 @@ export interface IStorage {
   createOcrResult(result: InsertOcrResult): Promise<OcrResult>;
   updateOcrResult(id: number, data: Partial<OcrResult>): Promise<OcrResult | undefined>;
   
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any for session store as the type is complex
 }
 
 export class DatabaseStorage implements IStorage {
-  sessionStore: session.SessionStore;
+  sessionStore: any; // Using any for session store type as it's complex
 
   constructor() {
     this.sessionStore = new PostgresSessionStore({
