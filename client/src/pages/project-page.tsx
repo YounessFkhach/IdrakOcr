@@ -149,20 +149,58 @@ export default function ProjectPage() {
         // Parse form fields if available
         if (project.formFields) {
           try {
-            setFormFields(JSON.parse(project.formFields));
+            const parsedFields = JSON.parse(project.formFields);
+            if (Array.isArray(parsedFields)) {
+              setFormFields(parsedFields);
+            } else {
+              console.error("Form fields is not an array:", parsedFields);
+              toast({
+                title: t("projects.invalidFormFields"),
+                description: t("projects.fieldsNotArray"),
+                variant: "destructive",
+              });
+              setFormFields([]);
+            }
           } catch (e) {
             console.error("Error parsing form fields:", e);
+            toast({
+              title: t("common.error"),
+              description: t("projects.invalidFormFields"),
+              variant: "destructive",
+            });
+            setFormFields([]);
           }
+        } else {
+          setFormFields([]);
         }
       } else if (project.status === "field_editing") {
         setCurrentStep(3);
         // Parse form fields if available
         if (project.formFields) {
           try {
-            setFormFields(JSON.parse(project.formFields));
+            const parsedFields = JSON.parse(project.formFields);
+            if (Array.isArray(parsedFields)) {
+              setFormFields(parsedFields);
+            } else {
+              console.error("Form fields is not an array:", parsedFields);
+              toast({
+                title: t("projects.invalidFormFields"),
+                description: t("projects.fieldsNotArray"),
+                variant: "destructive",
+              });
+              setFormFields([]);
+            }
           } catch (e) {
             console.error("Error parsing form fields:", e);
+            toast({
+              title: t("common.error"),
+              description: t("projects.invalidFormFields"),
+              variant: "destructive",
+            });
+            setFormFields([]);
           }
+        } else {
+          setFormFields([]);
         }
       } else if (project.status === "complete") {
         setCurrentStep(5);
