@@ -1376,7 +1376,11 @@ export default function ProjectPage() {
             
             {/* Upload component */}
             <ImageUpload
-              onImageUpload={handleTestUpload}
+              onImageUpload={(file) => {
+                setSelectedTestFile(file);
+                // Auto-start processing when a file is selected
+                processTestMutation.mutate(file);
+              }}
               description={t("projects.dragAndDropTest")}
               isProcessing={processTestMutation.isPending}
             />
