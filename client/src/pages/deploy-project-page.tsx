@@ -43,9 +43,118 @@ export default function DeployProjectPage() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [processingResults, setProcessingResults] = useState<OcrResult[]>([]);
   const [resultIds, setResultIds] = useState<number[]>([]);
-  const [outputFormat, setOutputFormat] = useState("markdown");
+  const [outputFormat, setOutputFormat] = useState("json");
   const [saveResults, setSaveResults] = useState(true);
   const [enableBatchOptimization, setEnableBatchOptimization] = useState(true);
+  
+  // Function to convert JSON to CSV
+  const convertToCSV = (data: any[]): string => {
+    if (data.length === 0) return '';
+    
+    // Get all unique keys from all objects
+    const allKeys = new Set<string>();
+    data.forEach(item => {
+      if (item && item.extractedData) {
+        try {
+          const extracted = typeof item.extractedData === 'string' 
+            ? JSON.parse(item.extractedData) 
+            : item.extractedData;
+          
+          Object.keys(extracted).forEach(key => allKeys.add(key));
+        } catch (e) {
+          console.error("Error parsing extracted data:", e);
+        }
+      }
+    });
+    
+    const headers = Array.from(allKeys);
+    const headerRow = ['fileName', ...headers].join(',');
+    
+    const rows = data.map(item => {
+      let extractedObj: Record<string, any> = {};
+      if (item && item.extractedData) {
+        try {
+          extractedObj = typeof item.extractedData === 'string' 
+            ? JSON.parse(item.extractedData) 
+            : item.extractedData;
+        } catch (e) {
+          console.error("Error parsing row data:", e);
+        }
+      }
+      
+      const values = headers.map(header => {
+        const value = extractedObj[header];
+        // Handle special characters, quotes, commas in CSV
+        if (value === null || value === undefined) return '';
+        if (typeof value === 'string') {
+          // Escape quotes and wrap in quotes if contains comma or quote
+          if (value.includes(',') || value.includes('"')) {
+            return `"${value.replace(/"/g, '""')}"`;
+          }
+          return value;
+        }
+        return String(value);
+      });
+      
+      return [item.fileName, ...values].join(',');
+    });
+    
+    return [headerRow, ...rows].join('\n');
+  };
+  
+  // Function to export all results
+  const exportAllResults = () => {
+    const completedResults = processingResults.filter(r => r.status === "complete");
+    if (completedResults.length === 0) return;
+    
+    let exportData: string;
+    let fileExtension: string;
+    let mimeType: string;
+    
+    if (outputFormat === 'json') {
+      // Prepare JSON data
+      const jsonData = completedResults.map(result => {
+        let extractedData: Record<string, any> = {};
+        try {
+          extractedData = typeof result.extractedData === 'string' 
+            ? JSON.parse(result.extractedData) 
+            : result.extractedData;
+        } catch (e) {
+          console.error("Error parsing JSON data:", e);
+        }
+        
+        return {
+          fileName: result.fileName,
+          ...extractedData
+        };
+      });
+      
+      exportData = JSON.stringify(jsonData, null, 2);
+      fileExtension = 'json';
+      mimeType = 'application/json';
+    } else {
+      // Prepare CSV data
+      exportData = convertToCSV(completedResults);
+      fileExtension = 'csv';
+      mimeType = 'text/csv';
+    }
+    
+    // Create and download the file
+    const blob = new Blob([exportData], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${project ? project.name : 'export'}-results.${fileExtension}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: t("deploy.exportSuccess"),
+      description: t("deploy.exportDescription", { count: completedResults.length }),
+    });
+  };
   const [isPolling, setIsPolling] = useState(false);
 
   // Fetch project
@@ -304,9 +413,8 @@ export default function DeployProjectPage() {
                           <SelectValue placeholder={t("deploy.selectFormat")} />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="markdown">Markdown</SelectItem>
                           <SelectItem value="json">JSON</SelectItem>
-                          <SelectItem value="text">Plain Text</SelectItem>
+                          <SelectItem value="csv">CSV</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -385,9 +493,10 @@ export default function DeployProjectPage() {
                         size="sm"
                         disabled={processingResults.filter(r => r.status === "complete").length === 0}
                         className="flex items-center"
+                        onClick={exportAllResults}
                       >
                         <Download className="h-4 w-4 mr-1" />
-                        {t("deploy.exportAll")}
+                        {t("deploy.exportAll")} ({outputFormat.toUpperCase()})
                       </Button>
                     </div>
                     <CardDescription>
