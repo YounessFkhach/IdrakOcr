@@ -333,6 +333,16 @@ export default function ProjectPage() {
   };
 
   const onFieldsSubmit = () => {
+    if (!formFields || !Array.isArray(formFields)) {
+      console.error("formFields is not an array:", formFields);
+      toast({
+        title: t("common.error"),
+        description: t("projects.fieldsNotArray"),
+        variant: "destructive"
+      });
+      return;
+    }
+    
     const fieldsWithOrder = formFields.map((field, index) => ({
       ...field,
       order: index + 1
@@ -657,7 +667,7 @@ export default function ProjectPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {formFields.map((field, index) => (
+                          {formFields && Array.isArray(formFields) ? formFields.map((field, index) => (
                             <TableRow key={field.id || index}>
                               <TableCell className="font-medium">{field.name}</TableCell>
                               <TableCell>{field.label}</TableCell>
@@ -727,7 +737,13 @@ export default function ProjectPage() {
                                 </div>
                               </TableCell>
                             </TableRow>
-                          ))}
+                          )) : (
+                            <TableRow>
+                              <TableCell colSpan={5} className="text-center py-4">
+                                {t("projects.noFieldsData")}
+                              </TableCell>
+                            </TableRow>
+                          )}
                         </TableBody>
                       </Table>
                     </div>
