@@ -50,43 +50,147 @@ export default function DeployProjectPage() {
   // Function to extract nested field data from result object
   const extractFieldData = (result: OcrResult): Record<string, any> => {
     let fieldData: Record<string, any> = {};
+    
+    // Debug: Log the structure of the result to understand what we're working with
+    console.log("Processing result:", result.fileName, result.extractedData);
+    
     try {
       // First try to parse extractedData
       if (result.extractedData) {
-        const parsed = typeof result.extractedData === 'string' 
-          ? JSON.parse(result.extractedData) 
-          : result.extractedData;
+        let parsed;
+        try {
+          // Try to parse if it's a string
+          if (typeof result.extractedData === 'string') {
+            parsed = JSON.parse(result.extractedData);
+            console.log("Successfully parsed extractedData string:", parsed);
+          } else {
+            parsed = result.extractedData;
+            console.log("extractedData is already an object:", parsed);
+          }
           
-        // Check if parsed has a mergedText property (common in our results format)
-        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
-          fieldData = { ...parsed.mergedText };
-        } else {
-          // If no mergedText, use the whole object
-          fieldData = { ...parsed };
+          // Check if parsed has a mergedText property
+          if (parsed && parsed.mergedText) {
+            console.log("Found mergedText in extractedData:", parsed.mergedText);
+            
+            // If mergedText is an object, use it
+            if (typeof parsed.mergedText === 'object' && parsed.mergedText !== null) {
+              fieldData = { ...parsed.mergedText };
+            } 
+            // If mergedText is a string (possibly JSON), try to parse it
+            else if (typeof parsed.mergedText === 'string') {
+              try {
+                const mergedTextObj = JSON.parse(parsed.mergedText);
+                fieldData = { ...mergedTextObj };
+                console.log("Parsed mergedText string into:", fieldData);
+              } catch (e) {
+                console.log("mergedText is a string but not JSON:", parsed.mergedText);
+                // Use as is if not JSON
+                fieldData = { content: parsed.mergedText };
+              }
+            }
+          } else {
+            // No mergedText, check the data structure more carefully
+            
+            // If it's an array, take the first item (common pattern in AI responses)
+            if (Array.isArray(parsed)) {
+              console.log("extractedData is an array, using first item");
+              fieldData = { ...parsed[0] };
+            }
+            // Otherwise use the whole object, excluding 'analysis' or other non-field properties
+            else {
+              console.log("Using full extractedData object, excluding special properties");
+              // List of properties to exclude (analysis, etc.)
+              const excludeProps = ['analysis', '__proto__'];
+              
+              // Copy all properties except excluded ones
+              Object.keys(parsed).forEach(key => {
+                if (!excludeProps.includes(key)) {
+                  fieldData[key] = parsed[key as keyof typeof parsed];
+                }
+              });
+            }
+          }
+        } catch (e) {
+          console.error("Error parsing extractedData:", e);
         }
       }
+      
       // If no data yet and geminiResult exists, try that
-      else if (result.geminiResult && Object.keys(fieldData).length === 0) {
-        const parsed = typeof result.geminiResult === 'string'
-          ? JSON.parse(result.geminiResult)
-          : result.geminiResult;
+      if (Object.keys(fieldData).length === 0 && result.geminiResult) {
+        console.log("Trying geminiResult");
+        let parsed;
+        try {
+          if (typeof result.geminiResult === 'string') {
+            parsed = JSON.parse(result.geminiResult);
+          } else {
+            parsed = result.geminiResult;
+          }
           
-        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
-          fieldData = { ...parsed.mergedText };
-        } else {
-          fieldData = { ...parsed };
+          if (parsed && parsed.mergedText && typeof parsed.mergedText === 'object') {
+            fieldData = { ...parsed.mergedText };
+          } else if (Array.isArray(parsed)) {
+            fieldData = { ...parsed[0] };
+          } else {
+            const excludeProps = ['analysis', '__proto__'];
+            Object.keys(parsed).forEach(key => {
+              if (!excludeProps.includes(key)) {
+                fieldData[key] = parsed[key];
+              }
+            });
+          }
+        } catch (e) {
+          console.error("Error with geminiResult:", e);
         }
       }
+      
       // If still no data and openaiResult exists, try that
-      else if (result.openaiResult && Object.keys(fieldData).length === 0) {
-        const parsed = typeof result.openaiResult === 'string'
-          ? JSON.parse(result.openaiResult)
-          : result.openaiResult;
+      if (Object.keys(fieldData).length === 0 && result.openaiResult) {
+        console.log("Trying openaiResult");
+        let parsed;
+        try {
+          if (typeof result.openaiResult === 'string') {
+            parsed = JSON.parse(result.openaiResult);
+          } else {
+            parsed = result.openaiResult;
+          }
           
-        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
-          fieldData = { ...parsed.mergedText };
-        } else {
-          fieldData = { ...parsed };
+          if (parsed && parsed.mergedText && typeof parsed.mergedText === 'object') {
+            fieldData = { ...parsed.mergedText };
+          } else if (Array.isArray(parsed)) {
+            fieldData = { ...parsed[0] };
+          } else {
+            const excludeProps = ['analysis', '__proto__'];
+            Object.keys(parsed).forEach(key => {
+              if (!excludeProps.includes(key)) {
+                fieldData[key] = parsed[key];
+              }
+            });
+          }
+        } catch (e) {
+          console.error("Error with openaiResult:", e);
+        }
+      }
+      
+      // Additional handling for nested structures - this helps handle data with complex nesting
+      if (Object.keys(fieldData).length === 0 && result.extractedData) {
+        console.log("Trying advanced parsing for complex structures");
+        try {
+          const data = typeof result.extractedData === 'string' 
+            ? JSON.parse(result.extractedData) 
+            : result.extractedData;
+            
+          // Look for any object property that might contain our field data
+          Object.keys(data).forEach(key => {
+            if (typeof data[key] === 'object' && data[key] !== null && !Array.isArray(data[key])) {
+              console.log("Found possible field container:", key);
+              // Flatten one level of nesting
+              Object.keys(data[key]).forEach(subKey => {
+                fieldData[subKey] = data[key][subKey];
+              });
+            }
+          });
+        } catch (e) {
+          console.error("Error in advanced parsing:", e);
         }
       }
       
@@ -95,10 +199,12 @@ export default function DeployProjectPage() {
         if (fieldData[key] !== null && 
             typeof fieldData[key] === 'object' && 
             !Array.isArray(fieldData[key])) {
+          console.log("Removing nested object:", key);
           delete fieldData[key];
         }
       });
       
+      console.log("Final extracted field data:", fieldData);
       return fieldData;
     } catch (e) {
       console.error("Error extracting field data:", e);
