@@ -50,10 +50,8 @@ export function Navbar() {
               ) : (
                 user && (
                   <>
-                    <Link href="/dashboard">
-                      <a className={`relative px-3 py-2 text-sm font-medium after:absolute after:h-0.5 after:bg-primary after:bottom-0 after:left-0 after:transition-all ${isActive('/dashboard') ? 'text-foreground after:w-full' : 'text-muted-foreground hover:text-foreground after:w-0 hover:after:w-full'}`}>
-                        {t("nav.dashboard")}
-                      </a>
+                    <Link href="/dashboard" className={`relative px-3 py-2 text-sm font-medium after:absolute after:h-0.5 after:bg-primary after:bottom-0 after:left-0 after:transition-all ${isActive('/dashboard') ? 'text-foreground after:w-full' : 'text-muted-foreground hover:text-foreground after:w-0 hover:after:w-full'}`}>
+                      {t("nav.dashboard")}
                     </Link>
                   </>
                 )

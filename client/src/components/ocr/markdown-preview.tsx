@@ -80,12 +80,13 @@ export function MarkdownPreview({ content }: MarkdownPreviewProps) {
   }), []);
 
   return (
-    <ReactMarkdown 
-      remarkPlugins={[remarkGfm]} 
-      components={renderers as any}
-      className="prose prose-invert max-w-none"
-    >
-      {content}
-    </ReactMarkdown>
+    <div className="prose prose-invert max-w-none">
+      <ReactMarkdown 
+        remarkPlugins={[remarkGfm]} 
+        components={renderers as any}
+      >
+        {content}
+      </ReactMarkdown>
+    </div>
   );
 }
