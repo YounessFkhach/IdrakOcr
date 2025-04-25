@@ -292,7 +292,10 @@
     "startDeployment": "Start Deployment",
     "runMoreTests": "Run More Tests",
     "skipTest": "Skip Testing",
-    "backToDashboard": "Back to Dashboard"
+    "backToDashboard": "Back to Dashboard",
+    "fieldsNotArray": "Form fields data is invalid",
+    "noFieldsData": "No field data available",
+    "invalidFormFields": "Invalid form fields data"
   },
   "test": {
     "testProcessing": "Test Processing",
