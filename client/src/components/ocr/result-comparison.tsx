@@ -43,9 +43,13 @@ export function ResultComparison({
   useEffect(() => {
     if (geminiResult) {
       try {
+        // Add debugging
+        console.log("Raw Gemini result:", geminiResult);
         const parsed = JSON.parse(geminiResult);
+        console.log("Parsed Gemini result:", parsed);
         setParsedGeminiResult(parsed);
       } catch (e) {
+        console.error("Error parsing Gemini result:", e);
         setParsedGeminiResult({ text: geminiResult });
       }
     } else {
@@ -56,9 +60,13 @@ export function ResultComparison({
   useEffect(() => {
     if (openaiResult) {
       try {
+        // Add debugging
+        console.log("Raw OpenAI result:", openaiResult);
         const parsed = JSON.parse(openaiResult);
+        console.log("Parsed OpenAI result:", parsed);
         setParsedOpenAIResult(parsed);
       } catch (e) {
+        console.error("Error parsing OpenAI result:", e);
         setParsedOpenAIResult({ text: openaiResult });
       }
     } else {

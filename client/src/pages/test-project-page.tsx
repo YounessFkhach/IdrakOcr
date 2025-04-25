@@ -254,6 +254,17 @@ export default function TestProjectPage() {
                   isLoading={processMutation.isPending}
                   selectedModel={processingResult?.selectedResult || undefined}
                 />
+                {/* For debugging */}
+                {processingResult && (
+                  <div className="mt-4 p-4 bg-muted rounded-lg text-xs">
+                    <details>
+                      <summary className="cursor-pointer font-medium">Debug Info</summary>
+                      <pre className="mt-2 overflow-auto max-h-36">
+                        {JSON.stringify(processingResult, null, 2)}
+                      </pre>
+                    </details>
+                  </div>
+                )}
                 
                 {processingResult && processingResult.selectedResult && (
                   <div className="mt-6 text-center">
