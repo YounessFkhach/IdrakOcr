@@ -475,7 +475,7 @@ export default function ProjectPage() {
     mutationFn: async ({ id, model }: { id: number, model: string }) => {
       const res = await apiRequest(
         "POST", 
-        `/api/projects/${project?.id}/results/${id}/select`, 
+        `/api/projects/${id}/results/${id}/select`, 
         { model }
       );
       return await res.json();
@@ -1251,7 +1251,7 @@ export default function ProjectPage() {
                     <div className="flex gap-4 mt-6">
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: processedResult.id,
+                          id: processedResult?.id,
                           model: "gemini"
                         })}
                         variant="outline"
@@ -1262,7 +1262,7 @@ export default function ProjectPage() {
                       </Button>
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: processedResult.id, 
+                          id: processedResult?.id,
                           model: "openai"
                         })}
                         variant="outline"
