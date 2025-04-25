@@ -1453,7 +1453,7 @@ export default function ProjectPage() {
                       model: "gemini"
                     })}
                     variant="outline"
-                    className="flex-1 border-blue-200 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-full h-12"
+                    className="flex-1 border-primary/40 bg-background hover:bg-primary/5 text-primary/90 rounded-sm h-12 paper-button"
                   >
                     <CheckCircle className="mr-2 h-5 w-5" />
                     {t("results.useGemini")}
@@ -1464,7 +1464,7 @@ export default function ProjectPage() {
                       model: "openai"
                     })}
                     variant="outline"
-                    className="flex-1 border-emerald-200 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-full h-12"
+                    className="flex-1 border-secondary/40 bg-background hover:bg-secondary/5 text-secondary rounded-sm h-12 paper-button"
                   >
                     <CheckCircle className="mr-2 h-5 w-5" />
                     {t("results.useOpenAI")}
@@ -1474,13 +1474,13 @@ export default function ProjectPage() {
             )}
             
             {/* Deployment section */}
-            <div className="mt-8 bg-gradient-to-br from-primary/20 to-primary/5 rounded-xl p-8">
+            <div className="mt-8 paper-gradient paper-card border border-primary/20 p-8">
               <div className="flex gap-6 items-start">
-                <div className="bg-background rounded-full h-16 w-16 flex items-center justify-center shrink-0 shadow-sm">
+                <div className="bg-background rounded-sm h-16 w-16 flex items-center justify-center shrink-0 shadow-sm border border-primary/20 paper-icon-container">
                   <CheckCircle className="h-9 w-9 text-primary" />
                 </div>
                 <div>
-                  <h3 className="text-xl font-semibold mb-2">{t("projects.readyForDeployment")}</h3>
+                  <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: "'Libre Baskerville', Georgia, serif" }}>{t("projects.readyForDeployment")}</h3>
                   <p className="text-muted-foreground mb-6 max-w-2xl">
                     {t("projects.readyForDeploymentDesc")}
                   </p>
@@ -1488,7 +1488,7 @@ export default function ProjectPage() {
                   <div className="flex flex-wrap gap-4">
                     <Button
                       onClick={() => navigate(`/projects/${id}/deploy`)}
-                      className="gap-1 px-6 rounded-full h-12 shadow-sm hover:shadow transition-shadow"
+                      className="gap-1 px-6 rounded-sm h-12 shadow-sm hover:shadow transition-shadow paper-button"
                       size="lg"
                     >
                       <UploadCloud className="h-5 w-5 mr-1" />
@@ -1497,7 +1497,7 @@ export default function ProjectPage() {
                     <Button
                       variant="outline"
                       onClick={() => setCurrentStep(4)}
-                      className="gap-1 px-6 rounded-full h-12"
+                      className="gap-1 px-6 rounded-sm h-12 paper-button"
                       size="lg"
                     >
                       <FlaskConical className="h-5 w-5 mr-1" />
@@ -1513,7 +1513,7 @@ export default function ProjectPage() {
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(4)}
-                className="rounded-full px-6"
+                className="rounded-sm px-6 paper-button"
               >
                 <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
@@ -1522,7 +1522,7 @@ export default function ProjectPage() {
               <Button
                 variant="default"
                 onClick={() => navigate("/dashboard")}
-                className="rounded-full px-6"
+                className="rounded-sm px-6 paper-button"
               >
                 {t("projects.backToDashboard")}
               </Button>
@@ -1563,21 +1563,22 @@ export default function ProjectPage() {
                   {/* Step connector line */}
                   {showLine && (
                     <div 
-                      className={`absolute top-5 left-[calc(50%+12px)] h-0.5 w-[calc(100%-24px)] md:w-[calc(100%-30px)] 
-                      ${isCompleted ? "bg-primary" : "bg-muted"}`}
+                      className={`absolute top-5 left-[calc(50%+12px)] h-0.5 w-[calc(100%-24px)] md:w-[calc(100%-30px)] border-t
+                      ${isCompleted ? "border-primary/60" : "border-border/60"}`}
                       aria-hidden="true"
+                      style={{ borderStyle: 'dashed' }}
                     />
                   )}
                   
                   {/* Step indicator */}
                   <button
-                    className={`flex items-center justify-center h-10 w-10 rounded-full shadow-sm
+                    className={`flex items-center justify-center h-10 w-10 rounded-sm shadow-sm border
                     ${isActive 
-                      ? "bg-primary text-primary-foreground" 
+                      ? "bg-primary text-primary-foreground border-primary" 
                       : isCompleted 
-                      ? "bg-primary/90 text-primary-foreground ring-2 ring-primary/20" 
-                      : "bg-muted text-muted-foreground"}
-                    relative z-10 transition-all duration-200`}
+                      ? "bg-primary/20 text-primary border-primary/30" 
+                      : "bg-background text-muted-foreground border-border/60"}
+                    relative z-10 transition-all duration-200 paper-button`}
                     onClick={() => {
                       if (step.id <= currentStep) {
                         setCurrentStep(step.id);
