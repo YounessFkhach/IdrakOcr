@@ -270,31 +270,50 @@ export default function ProjectPage() {
       // Update form fields from detection
       if (data.fields) {
         try {
+          console.log("Field detection data received:", data.fields);
+          
           // Parse the fields if they are a string
           const parsedData = typeof data.fields === 'string' 
             ? JSON.parse(data.fields) 
             : data.fields;
           
-          // Check if we have a direct array or if it's nested in a mergedFormFields property
-          let detectedFields;
+          console.log("Parsed field data:", parsedData);
+          
+          // Check if we have a direct array or if it's nested in a property
+          let detectedFields = [];
+          
           if (Array.isArray(parsedData)) {
             detectedFields = parsedData;
-          } else if (parsedData.mergedFormFields && Array.isArray(parsedData.mergedFormFields)) {
-            detectedFields = parsedData.mergedFormFields;
-          } else {
-            // Try to find any array property in the object
+            console.log("Detected fields array found directly:", detectedFields);
+          } else if (parsedData && typeof parsedData === 'object') {
+            // It might be wrapped in some object, look for array properties
             const arrayProps = Object.keys(parsedData).filter(key => 
               Array.isArray(parsedData[key])
             );
             
             if (arrayProps.length > 0) {
               detectedFields = parsedData[arrayProps[0]];
+              console.log("Detected fields found in property:", arrayProps[0], detectedFields);
             } else {
-              throw new Error("No valid field array found in response");
+              // If there are no array properties but we have an object, let's make fields from it
+              if (Object.keys(parsedData).length > 0 && 
+                  parsedData.name && 
+                  parsedData.fieldType) {
+                // It seems to be a single field object, wrap it in an array
+                detectedFields = [parsedData];
+                console.log("Single field object found, wrapped in array:", detectedFields);
+              } else {
+                console.error("No valid field array or field object found in response");
+              }
             }
           }
           
-          setFormFields(detectedFields);
+          if (detectedFields.length > 0) {
+            setFormFields(detectedFields);
+          } else {
+            console.error("No fields detected in the response");
+            throw new Error("No fields could be detected in the image");
+          }
         } catch (e) {
           console.error("Error parsing detected fields:", e);
           toast({

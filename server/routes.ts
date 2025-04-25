@@ -162,7 +162,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Custom prompt for field detection
       const fieldDetectionPrompt = `
         Analyze this document image and identify all form fields.
-        Return a JSON array of field objects with properties:
+        
+        IMPORTANT: Respond with ONLY a JSON array of field objects - no additional text or explanation.
+        Do NOT wrap the array in another object. The response must start with '[' and end with ']'.
+        
+        For each field, include these properties:
         - name: camelCase identifier
         - label: Human-readable field label
         - fieldType: one of [text, number, date, email, tel, checkbox, radio, select, textarea]
@@ -172,7 +176,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         - placeholder: detected placeholder text
         - order: position in the form (1-based)
         
-        Example:
+        Example response format (just this array, nothing else):
         [
           {
             "name": "fullName",
@@ -183,6 +187,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
             "defaultValue": "",
             "placeholder": "Enter your full name",
             "order": 1
+          },
+          {
+            "name": "email",
+            "label": "Email Address",
+            "fieldType": "email",
+            "required": true,
+            "options": null,
+            "defaultValue": "",
+            "placeholder": "example@domain.com",
+            "order": 2
           }
         ]
       `;
@@ -194,10 +208,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
           extractTextWithOpenAI(base64Image, fieldDetectionPrompt)
         ]);
 
+        // Log the raw responses for debugging
+        console.log("Gemini response:", geminiFields);
+        console.log("OpenAI response:", openaiFields);
+        
         // Merge fields from both models
         const mergedFields = await geminiCompare(geminiFields, openaiFields, 
-          "Analyze both field detection results and create a merged accurate JSON array of form fields. Fix any field type errors or name inconsistencies."
+          `Analyze both field detection results and create an accurate JSON array of form fields.
+           Fix any field type errors or name inconsistencies. 
+           
+           EXTREMELY IMPORTANT: 
+           1. Return ONLY a valid JSON array starting with [ and ending with ]
+           2. Do NOT wrap the array in another JSON object with properties
+           3. The array should directly contain field objects
+           4. NO explanatory text before or after the JSON
+           
+           Example of correct response format:
+           [{"name":"field1","label":"Field 1","fieldType":"text","required":true}]`
         );
+        
+        console.log("Merged fields response:", mergedFields);
         
         // Parse the fields
         let parsedFields;
