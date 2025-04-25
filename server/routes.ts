@@ -213,13 +213,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
           geminiCompare(geminiData, openaiData, project.customPrompt),
           openaiCompare(geminiData, openaiData, project.customPrompt)
         ]);
-
+        
+        console.log("Gemini result type:", typeof geminiResult);
+        console.log("OpenAI result type:", typeof openaiResult);
+        
+        // Create standardized result objects
+        let formattedGeminiResult = geminiResult;
+        let formattedOpenAIResult = openaiResult;
+        
+        // Ensure the results are in string format
+        if (typeof formattedGeminiResult !== 'string') {
+          formattedGeminiResult = JSON.stringify(formattedGeminiResult);
+        }
+        
+        if (typeof formattedOpenAIResult !== 'string') {
+          formattedOpenAIResult = JSON.stringify(formattedOpenAIResult);
+        }
+        
         // Update the OCR result with the processed data
         const updatedResult = await storage.updateOcrResult(ocrResult.id, {
           geminiData,
           openaiData,
-          geminiResult,
-          openaiResult,
+          geminiResult: formattedGeminiResult,
+          openaiResult: formattedOpenAIResult,
           status: "complete"
         });
 

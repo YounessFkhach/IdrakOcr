@@ -51,6 +51,12 @@ export function ResultComparison({
         console.log("Raw Gemini result:", geminiResult);
         const parsed = JSON.parse(geminiResult);
         console.log("Parsed Gemini result:", parsed);
+        
+        // If we have mergedText but no text, use mergedText as text
+        if (parsed.mergedText && !parsed.text) {
+          parsed.text = parsed.mergedText;
+        }
+        
         setParsedGeminiResult(parsed);
       } catch (e) {
         console.error("Error parsing Gemini result:", e);
@@ -68,6 +74,12 @@ export function ResultComparison({
         console.log("Raw OpenAI result:", openaiResult);
         const parsed = JSON.parse(openaiResult);
         console.log("Parsed OpenAI result:", parsed);
+        
+        // If we have mergedText but no text, use mergedText as text
+        if (parsed.mergedText && !parsed.text) {
+          parsed.text = parsed.mergedText;
+        }
+        
         setParsedOpenAIResult(parsed);
       } catch (e) {
         console.error("Error parsing OpenAI result:", e);
