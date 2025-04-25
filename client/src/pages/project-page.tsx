@@ -557,9 +557,12 @@ export default function ProjectPage() {
   // Model selection mutation
   const selectModelMutation = useMutation({
     mutationFn: async ({ id, model }: { id: number, model: string }) => {
+      // Get the current project ID from the URL
+      const projectId = parseInt(id as unknown as string);
+      
       const res = await apiRequest(
         "POST", 
-        `/api/projects/${id}/results/${id}/select`, 
+        `/api/projects/${projectId}/results/${id}/select`, 
         { model }
       );
       return await res.json();
@@ -1335,7 +1338,7 @@ export default function ProjectPage() {
                     <div className="flex gap-4 mt-6">
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: processedResult?.id,
+                          id: Number(processedResult?.id),
                           model: "gemini"
                         })}
                         variant="outline"
@@ -1346,7 +1349,7 @@ export default function ProjectPage() {
                       </Button>
                       <Button 
                         onClick={() => selectModelMutation.mutate({
-                          id: processedResult?.id,
+                          id: Number(processedResult?.id),
                           model: "openai"
                         })}
                         variant="outline"
