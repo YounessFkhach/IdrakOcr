@@ -556,13 +556,15 @@ export default function ProjectPage() {
 
   // Model selection mutation
   const selectModelMutation = useMutation({
-    mutationFn: async ({ id, model }: { id: number, model: string }) => {
-      // Get the current project ID from the URL
-      const projectId = parseInt(id as unknown as string);
+    mutationFn: async ({ resultId, model }: { resultId: number, model: string }) => {
+      // Get the current project ID from the URL parameter
+      const projectId = Number(id);
+      
+      console.log(`Selecting model ${model} for result ${resultId} in project ${projectId}`);
       
       const res = await apiRequest(
         "POST", 
-        `/api/projects/${projectId}/results/${id}/select`, 
+        `/api/projects/${projectId}/results/${resultId}/select`, 
         { model }
       );
       return await res.json();
