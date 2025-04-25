@@ -2,64 +2,116 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Material You (M3) Inspired Color Palette */
 :root {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 265 90% 76%;
-  --primary-foreground: 0 0% 10%;
-  --secondary: 175 84% 32%;
-  --secondary-foreground: 0 0% 98%;
-  --accent: 240 3.7% 15.9%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 0 0% 98%;
-  --ring: 265 90% 76%; 
+  /* Dark Mode Colors */
+  --background: 240 10% 3.9%; /* Dark background */
+  --foreground: 0 0% 98%; /* Text on background */
+  
+  --muted: 240 4% 12%; /* Subtle background */
+  --muted-foreground: 240 5% 65%; /* Subtle text */
+  
+  --popover: 240 10% 5%; /* Popover background */
+  --popover-foreground: 0 0% 98%; /* Text on popover */
+  
+  --card: 240 10% 5%; /* Card background */
+  --card-foreground: 0 0% 98%; /* Text on card */
+  
+  --border: 240 4% 16%; /* Borders and dividers */
+  --input: 240 4% 16%; /* Form input borders */
+  
+  /* Primary colors - Material Purple */
+  --primary: 265 90% 65%; /* Primary color (vibrant purple) */
+  --primary-foreground: 0 0% 100%; /* Text on primary */
+  
+  /* Secondary colors - Material Teal */
+  --secondary: 175 84% 32%; /* Secondary color (teal) */
+  --secondary-foreground: 0 0% 100%; /* Text on secondary */
+  
+  /* Accent - Subtle surface colors */
+  --accent: 240 5% 15%; /* Accent surface */
+  --accent-foreground: 0 0% 98%; /* Text on accent */
+  
+  /* Functional colors */
+  --destructive: 0 70% 45%; /* Error/destructive */
+  --destructive-foreground: 0 0% 98%; /* Text on destructive */
+  
+  --success: 142 70% 45%; /* Success color */
+  --success-foreground: 0 0% 98%; /* Text on success */
+  
+  --warning: 38 92% 50%; /* Warning color */
+  --warning-foreground: 0 0% 98%; /* Text on warning */
+  
+  --ring: 265 90% 65%; /* Focus rings */
+  
+  /* Rounded corners */
   --radius: 1rem;
   
-  --chart-1: 265 90% 76%;
-  --chart-2: 175 84% 32%;
-  --chart-3: 320 70% 66%;
-  --chart-4: 220 70% 50%;
-  --chart-5: 40 80% 50%;
+  /* Chart colors */
+  --chart-1: 265 90% 65%; /* Purple */
+  --chart-2: 175 84% 32%; /* Teal */
+  --chart-3: 320 70% 60%; /* Pink */
+  --chart-4: 220 70% 50%; /* Blue */
+  --chart-5: 38 92% 50%; /* Amber */
   
-  --sidebar-background: 240 10% 3.9%;
+  /* Navigation sidebar */
+  --sidebar-background: 240 10% 5%;
   --sidebar-foreground: 0 0% 98%;
-  --sidebar-primary: 265 90% 76%;
-  --sidebar-primary-foreground: 0 0% 10%;
-  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-primary: 265 90% 65%; 
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 5% 15%;
   --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 265 90% 76%;
+  --sidebar-border: 240 4% 16%;
+  --sidebar-ring: 265 90% 65%;
 }
 
 .light {
-  --background: 0 0% 100%;
-  --foreground: 20 14.3% 4.1%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 20 14.3% 4.1%;
-  --card: 0 0% 100%;
-  --card-foreground: 20 14.3% 4.1%;
-  --border: 20 5.9% 90%;
-  --input: 20 5.9% 90%;
-  --primary: 265 90% 43%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 175 84% 32%;
-  --secondary-foreground: 0 0% 100%;
-  --accent: 60 4.8% 95.9%;
-  --accent-foreground: 24 9.8% 10%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 60 9.1% 97.8%;
-  --ring: 265 90% 43%;
+  /* Light Mode Colors */
+  --background: 0 0% 100%; /* Light background */
+  --foreground: 240 10% 3.9%; /* Text on background */
+  
+  --muted: 240 5% 96%; /* Subtle background */
+  --muted-foreground: 240 3.8% 46.1%; /* Subtle text */
+  
+  --popover: 0 0% 100%; /* Popover background */
+  --popover-foreground: 240 10% 3.9%; /* Text on popover */
+  
+  --card: 0 0% 100%; /* Card background */
+  --card-foreground: 240 10% 3.9%; /* Text on card */
+  
+  --border: 240 5.9% 90%; /* Borders and dividers */
+  --input: 240 5.9% 90%; /* Form input borders */
+  
+  /* Primary colors - Material Purple */
+  --primary: 265 90% 45%; /* Primary color */
+  --primary-foreground: 0 0% 100%; /* Text on primary */
+  
+  /* Secondary colors - Material Teal */
+  --secondary: 175 84% 32%; /* Secondary color */
+  --secondary-foreground: 0 0% 100%; /* Text on secondary */
+  
+  /* Accent - Subtle surface colors */
+  --accent: 240 5% 96%; /* Accent surface */
+  --accent-foreground: 240 10% 3.9%; /* Text on accent */
+  
+  /* Functional colors */
+  --destructive: 0 84% 60%; /* Error/destructive */
+  --destructive-foreground: 0 0% 98%; /* Text on destructive */
+  
+  --success: 142 70% 45%; /* Success color */
+  --success-foreground: 0 0% 98%; /* Text on success */
+  
+  --warning: 38 92% 50%; /* Warning color */
+  --warning-foreground: 240 10% 3.9%; /* Text on warning */
+  
+  --ring: 265 90% 45%; /* Focus rings */
+  
+  /* Chart colors */
+  --chart-1: 265 90% 45%; /* Purple */
+  --chart-2: 175 84% 32%; /* Teal */
+  --chart-3: 320 70% 60%; /* Pink */
+  --chart-4: 220 70% 50%; /* Blue */
+  --chart-5: 38 92% 50%; /* Amber */
 }
 
 @layer base {
@@ -86,6 +138,35 @@
     @apply bg-card rounded-xl shadow-md transition-all duration-300 hover:shadow-lg;
   }
   
+  /* Material You design components */
+  .material-button {
+    @apply rounded-full shadow-sm hover:shadow transition-shadow;
+  }
+  
+  .material-input {
+    @apply rounded-lg border-input/50 focus-visible:ring-primary/50;
+  }
+  
+  .material-card-header {
+    @apply bg-primary/5 border-b border-border/40;
+  }
+  
+  .material-card-footer {
+    @apply border-t border-border/40 bg-muted/30;
+  }
+  
+  .material-icon-container {
+    @apply flex items-center justify-center rounded-full bg-primary/10;
+  }
+  
+  .material-chip {
+    @apply text-sm inline-flex items-center rounded-full px-3 py-1 bg-muted/50 text-muted-foreground;
+  }
+  
+  .material-gradient {
+    @apply bg-gradient-to-r from-primary/10 via-primary/5 to-background;
+  }
+  
   .image-drop-area {
     @apply border-2 border-dashed border-muted rounded-xl min-h-[200px] transition-all duration-300;
   }
@@ -99,5 +180,22 @@
     background: radial-gradient(circle, hsl(var(--primary) / 0.2) 0%, hsl(var(--secondary) / 0.1) 50%, transparent 70%);
     filter: blur(80px);
     z-index: -1;
+  }
+  
+  /* Enhance general UI elements */
+  .card {
+    @apply rounded-xl overflow-hidden;
+  }
+  
+  .button {
+    @apply rounded-lg transition-all;
+  }
+  
+  .dialog {
+    @apply rounded-xl;
+  }
+  
+  .popover {
+    @apply rounded-lg;
   }
 }

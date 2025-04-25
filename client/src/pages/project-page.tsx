@@ -728,12 +728,17 @@ export default function ProjectPage() {
     switch (currentStep) {
       case 1: // Basic project info
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("projects.basicInformation")}</CardTitle>
+          <Card className="overflow-hidden shadow-md rounded-xl border-0">
+            <CardHeader className="bg-primary/5 border-b border-border/40">
+              <CardTitle className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-4 w-4 text-primary" />
+                </div>
+                {t("projects.basicInformation")}
+              </CardTitle>
               <CardDescription>{t("projects.basicInfoDesc")}</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-6">
               <Form {...basicInfoForm}>
                 <form id="basic-info-form" onSubmit={basicInfoForm.handleSubmit(onBasicInfoSubmit)} className="space-y-6">
                   <FormField
@@ -743,7 +748,11 @@ export default function ProjectPage() {
                       <FormItem>
                         <FormLabel>{t("projects.name")}</FormLabel>
                         <FormControl>
-                          <Input placeholder={t("projects.namePlaceholder")} {...field} />
+                          <Input 
+                            placeholder={t("projects.namePlaceholder")} 
+                            className="rounded-lg" 
+                            {...field} 
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -760,6 +769,7 @@ export default function ProjectPage() {
                           <Textarea 
                             placeholder={t("projects.descriptionPlaceholder")} 
                             rows={3}
+                            className="rounded-lg"
                             {...field} 
                           />
                         </FormControl>
@@ -781,6 +791,7 @@ export default function ProjectPage() {
                           <Textarea
                             placeholder={t("projects.customPromptPlaceholder")}
                             rows={5}
+                            className="rounded-lg"
                             {...field}
                           />
                         </FormControl>
@@ -794,10 +805,11 @@ export default function ProjectPage() {
                 </form>
               </Form>
             </CardContent>
-            <CardFooter className="flex justify-between">
+            <CardFooter className="flex justify-between py-4 px-6 border-t border-border/40 bg-muted/30">
               <Button 
                 variant="outline" 
                 onClick={goBack}
+                className="rounded-full"
               >
                 {t("common.cancel")}
               </Button>
@@ -805,11 +817,11 @@ export default function ProjectPage() {
                 type="submit"
                 form="basic-info-form"
                 disabled={createProjectMutation.isPending}
-                className="gap-1"
+                className="gap-1 rounded-full shadow-sm hover:shadow transition-shadow"
               >
                 {createProjectMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                <ArrowRight className="h-4 w-4 ml-1" />
                 {t("projects.continue")}
+                <ArrowRight className="h-4 w-4 ml-1" />
               </Button>
             </CardFooter>
           </Card>
@@ -1428,62 +1440,110 @@ export default function ProjectPage() {
     ];
     
     return (
-      <nav aria-label="Progress" className="mb-8">
-        <ol className="grid grid-cols-1 md:grid-cols-5 gap-2">
-          {steps.map((step) => (
-            <li key={step.id} className="relative">
-              <button
-                className={`group flex w-full items-center ${
-                  step.id === currentStep
-                    ? "bg-primary text-primary-foreground"
-                    : step.id < currentStep
-                    ? "bg-primary/20 text-foreground"
-                    : "bg-muted text-muted-foreground"
-                } rounded-lg px-3 py-2 text-sm font-medium`}
-                onClick={() => {
-                  if (step.id < currentStep) {
-                    setCurrentStep(step.id);
-                  }
-                }}
-                disabled={step.id > currentStep}
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border mr-3">
-                  <step.icon className="h-4 w-4" />
-                </span>
-                <span className="text-sm">{step.name}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <div className="bg-card rounded-xl shadow-md p-6 mb-8">
+        <nav aria-label="Progress">
+          <ol className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            {steps.map((step, index) => {
+              // Determine step status
+              const isActive = step.id === currentStep;
+              const isCompleted = step.id < currentStep;
+              const isPending = step.id > currentStep;
+              
+              // Define connected line styles
+              const showLine = index < steps.length - 1;
+              
+              return (
+                <li key={step.id} className="relative">
+                  <div className="flex flex-col items-center group">
+                    {/* Step connector line */}
+                    {showLine && (
+                      <div 
+                        className={`absolute top-5 left-[calc(50%+12px)] h-0.5 w-[calc(100%-24px)] md:w-[calc(100%-30px)] 
+                        ${isCompleted ? "bg-primary" : "bg-muted"}`}
+                        aria-hidden="true"
+                      />
+                    )}
+                    
+                    {/* Step indicator */}
+                    <button
+                      className={`flex items-center justify-center h-10 w-10 rounded-full 
+                      ${isActive 
+                        ? "bg-primary text-primary-foreground" 
+                        : isCompleted 
+                        ? "bg-primary/90 text-primary-foreground ring-4 ring-primary/20" 
+                        : "bg-muted text-muted-foreground"}
+                      relative z-10 transition-all duration-200`}
+                      onClick={() => {
+                        if (step.id <= currentStep) {
+                          setCurrentStep(step.id);
+                        }
+                      }}
+                      disabled={isPending}
+                    >
+                      {isCompleted ? (
+                        <Check className="h-5 w-5" />
+                      ) : (
+                        <step.icon className="h-5 w-5" />
+                      )}
+                    </button>
+                    
+                    {/* Step label */}
+                    <div className="mt-3 text-center">
+                      <span 
+                        className={`text-sm font-medium 
+                        ${isActive 
+                          ? "text-primary" 
+                          : isCompleted 
+                          ? "text-foreground" 
+                          : "text-muted-foreground"}`}
+                      >
+                        {step.name}
+                      </span>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        </nav>
+      </div>
     );
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-background">
       <Navbar />
       
-      <main className="flex-grow container mx-auto px-4 pt-24 pb-16">
-        <div className="mb-6">
-          <Button variant="ghost" onClick={goBack} className="gap-1">
-            <ArrowLeft className="h-4 w-4" />
-            {t("common.back")}
-          </Button>
+      <main className="flex-grow">
+        {/* Hero section with gradient background */}
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-background pt-28 pb-12">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-col">
+              <Button 
+                variant="ghost" 
+                onClick={goBack} 
+                className="gap-1 w-fit rounded-full hover:bg-background/80 mb-6 -ml-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {t("common.back")}
+              </Button>
+              
+              <h1 className="text-4xl font-bold mb-3">
+                {isNewProject ? t("projects.createNew") : project?.name || ""}
+              </h1>
+              <p className="text-muted-foreground max-w-2xl">
+                {isNewProject ? t("projects.defineNewProject") : t("projects.updateProjectDetails")}
+              </p>
+            </div>
+          </div>
         </div>
         
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">
-            {isNewProject ? t("projects.createNew") : project?.name || ""}
-          </h1>
-          <p className="text-muted-foreground">
-            {isNewProject ? t("projects.defineNewProject") : t("projects.updateProjectDetails")}
-          </p>
-        </div>
-        
-        {renderProgress()}
-        
-        <div className="max-w-3xl mx-auto">
-          {renderStepContent()}
+        <div className="container mx-auto px-4 py-8 -mt-4">
+          {renderProgress()}
+          
+          <div className="max-w-3xl mx-auto mt-8">
+            {renderStepContent()}
+          </div>
         </div>
       </main>
       
