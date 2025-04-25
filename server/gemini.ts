@@ -29,8 +29,8 @@ const safetySettings = [
 
 export async function extractTextWithGemini(base64Image: string): Promise<string> {
   try {
-    // For Gemini Pro Vision
-    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+    // For Gemini Vision
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-preview-03-25" });
     
     const prompt = "Extract all text from this image. Format the result as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible.";
     
@@ -58,7 +58,7 @@ export async function compareAndMergeResults(
   customPrompt?: string
 ): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro-preview-03-25" });
     
     const prompt = customPrompt 
       ? `${customPrompt}\n\nHere are two extractions of the same document:\n\nExtraction 1 (Gemini):\n${geminiData}\n\nExtraction 2 (GPT):\n${gptData}\n\nPlease analyze both extractions and create a merged, improved version that takes the most accurate parts from each.`
