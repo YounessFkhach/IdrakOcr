@@ -133,96 +133,98 @@ export function ImageUpload({
   };
 
   return (
-    <Card>
-      <CardContent className="p-6">
-        <h3 className="text-xl font-medium mb-4">{title || t("upload.title")}</h3>
+    <div className="space-y-4">
+      {title && <h3 className="text-lg font-medium">{title}</h3>}
         
-        <div
-          className={`image-drop-area flex flex-col items-center justify-center py-10 px-4 ${isDragging ? 'active' : ''} ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
-          onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
-          onDrop={handleDrop}
-        >
-          {selectedFiles.length === 0 ? (
-            <>
-              <Upload className="h-12 w-12 text-muted-foreground mb-4" />
-              <p className="text-muted-foreground text-center mb-2">
-                {description || t("upload.dragDrop")}
-              </p>
-              <p className="text-muted-foreground/60 text-sm text-center">
-                {t("upload.supportedFormats", { size: maxFileSizeMB })}
-              </p>
-              <Button 
-                className="mt-6" 
-                onClick={openFileDialog}
-                variant="secondary"
-                disabled={isProcessing}
-              >
-                {t("upload.browse")}
-              </Button>
-            </>
-          ) : (
-            <div className="w-full">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                {previewUrls.map((url, index) => (
-                  <div key={index} className="relative bg-background/50 rounded-md p-2 flex items-center">
-                    {url === 'pdf' ? (
-                      <div className="w-12 h-12 flex items-center justify-center bg-muted rounded-md mr-3">
-                        <ImageIcon className="h-6 w-6 text-muted-foreground" />
-                      </div>
-                    ) : (
-                      <img 
-                        src={url} 
-                        alt={selectedFiles[index].name} 
-                        className="w-12 h-12 object-cover rounded-md mr-3" 
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {selectedFiles[index].name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {(selectedFiles[index].size / 1024 / 1024).toFixed(2)} MB
-                      </p>
+      <div
+        className={`border border-dashed border-border rounded-xl p-8 flex flex-col items-center justify-center bg-muted/10 transition-all duration-200 
+          ${isDragging ? 'border-primary bg-primary/5' : ''} 
+          ${isProcessing ? 'opacity-50 pointer-events-none' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        {selectedFiles.length === 0 ? (
+          <>
+            <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <Upload className="h-8 w-8 text-primary" />
+            </div>
+            <p className="text-base font-medium text-center mb-2">
+              {description || t("upload.dragDrop")}
+            </p>
+            <p className="text-muted-foreground text-sm text-center mb-6">
+              {t("upload.supportedFormats", { size: maxFileSizeMB })}
+            </p>
+            <Button 
+              onClick={openFileDialog}
+              variant="secondary"
+              className="rounded-full px-6"
+              disabled={isProcessing}
+            >
+              {t("upload.browse")}
+            </Button>
+          </>
+        ) : (
+          <div className="w-full">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              {previewUrls.map((url, index) => (
+                <div key={index} className="bg-background rounded-xl p-3 flex items-center border border-border/40">
+                  {url === 'pdf' ? (
+                    <div className="w-12 h-12 flex items-center justify-center bg-muted rounded-lg mr-3">
+                      <ImageIcon className="h-6 w-6 text-muted-foreground" />
                     </div>
-                    <button 
-                      className="p-1 text-muted-foreground hover:text-destructive transition-colors"
-                      onClick={() => removeFile(index)}
-                      disabled={isProcessing}
-                    >
-                      <X className="h-4 w-4" />
-                    </button>
+                  ) : (
+                    <img 
+                      src={url} 
+                      alt={selectedFiles[index].name} 
+                      className="w-12 h-12 object-cover rounded-lg mr-3" 
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {selectedFiles[index].name}
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      {(selectedFiles[index].size / 1024 / 1024).toFixed(2)} MB
+                    </p>
                   </div>
-                ))}
-              </div>
-              
-              {isMultiple && (
-                <div className="flex justify-center">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={openFileDialog}
+                  <button 
+                    className="p-1.5 hover:bg-muted rounded-full text-muted-foreground hover:text-destructive transition-colors"
+                    onClick={() => removeFile(index)}
                     disabled={isProcessing}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
-                    {t("upload.addMore")}
-                  </Button>
+                    <X className="h-4 w-4" />
+                  </button>
                 </div>
-              )}
+              ))}
             </div>
-          )}
-        </div>
-        
-        <input
-          type="file"
-          ref={fileInputRef}
-          className="hidden"
-          onChange={handleFileSelect}
-          accept={acceptedFileTypes}
-          multiple={isMultiple}
-          disabled={isProcessing}
-        />
-      </CardContent>
-    </Card>
+            
+            {isMultiple && (
+              <div className="flex justify-center mt-6">
+                <Button 
+                  variant="outline" 
+                  className="rounded-full"
+                  onClick={openFileDialog}
+                  disabled={isProcessing}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {t("upload.addMore")}
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      
+      <input
+        type="file"
+        ref={fileInputRef}
+        className="hidden"
+        onChange={handleFileSelect}
+        accept={acceptedFileTypes}
+        multiple={isMultiple}
+        disabled={isProcessing}
+      />
+    </div>
   );
 }

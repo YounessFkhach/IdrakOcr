@@ -844,61 +844,73 @@ export default function ProjectPage() {
               </div>
             </div>
             
-            {/* Upload section */}
-            <div className="bg-muted/30 rounded-xl p-8 border border-border/30">
-              <h3 className="text-lg font-medium mb-4">{t("projects.uploadExample")}</h3>
-              <p className="text-muted-foreground mb-6">
+            {/* Step instructions */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-2">{t("projects.uploadExample")}</h3>
+              <p className="text-muted-foreground">
                 {t("projects.uploadExampleDesc")}
               </p>
-              
-              <ImageUpload
-                onImageUpload={handleExampleUpload}
-                title={t("projects.dropExample")}
-                description={t("projects.dragAndDropExample")}
-                isProcessing={detectFieldsMutation.isPending}
-              />
-              
-              {selectedExample && (
-                <div className="mt-4 flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-5 w-5 text-green-500" />
-                  <span className="font-medium">{selectedExample.name}</span>
-                  <span className="text-muted-foreground">
-                    ({Math.round(selectedExample.size / 1024)} KB)
-                  </span>
-                </div>
-              )}
-              
-              {/* Action button */}
-              <div className="mt-6">
-                <Button
-                  onClick={onFieldDetectionSubmit}
-                  disabled={!selectedExample || detectFieldsMutation.isPending}
-                  className="gap-1 rounded-full px-6"
-                  size="lg"
-                >
-                  {detectFieldsMutation.isPending && <Loader2 className="h-5 w-5 animate-spin" />}
-                  <ListChecks className="h-5 w-5 mr-1" />
-                  {t("projects.detectFields")}
-                </Button>
-              </div>
             </div>
             
-            {/* Display detected fields preview after detection */}
+            {/* Upload component */}
+            <ImageUpload
+              onImageUpload={handleExampleUpload}
+              description={t("projects.dragAndDropExample")}
+              isProcessing={detectFieldsMutation.isPending}
+            />
+            
+            {/* Selected file info */}
+            {selectedExample && (
+              <div className="flex items-center gap-2 text-sm py-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="font-medium">{selectedExample.name}</span>
+                <span className="text-muted-foreground">
+                  ({Math.round(selectedExample.size / 1024)} KB)
+                </span>
+              </div>
+            )}
+            
+            {/* Detect button */}
+            {selectedExample && !detectFieldsMutation.isPending && 
+              !(project && project.status === "field_detection" && formFields.length > 0) && (
+              <Button
+                onClick={onFieldDetectionSubmit}
+                disabled={!selectedExample || detectFieldsMutation.isPending}
+                className="gap-1 rounded-full px-6"
+                size="lg"
+              >
+                {detectFieldsMutation.isPending && <Loader2 className="h-5 w-5 animate-spin" />}
+                <ListChecks className="h-5 w-5 mr-1" />
+                {t("projects.detectFields")}
+              </Button>
+            )}
+            
+            {/* Loading state */}
+            {detectFieldsMutation.isPending && (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+                <h3 className="text-lg font-medium">{t("projects.detecting")}</h3>
+                <p className="text-muted-foreground text-sm text-center mt-1">
+                  {t("projects.detectingDesc")}
+                </p>
+              </div>
+            )}
+            
+            {/* Fields detected section */}
             {project && project.status === "field_detection" && formFields.length > 0 && (
-              <div className="bg-muted/20 rounded-xl p-8 border border-border/50">
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-lg font-medium">{t("projects.detectedFields")}</h3>
-                    <p className="text-sm text-muted-foreground mt-1">
-                      {t("projects.reviewFields")}
-                    </p>
-                  </div>
+              <div className="space-y-4 mt-8">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium">{t("projects.detectedFields")}</h3>
                   <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-3 py-1 text-sm rounded-full">
                     {formFields.length} {t("projects.fieldsDetected")}
                   </Badge>
                 </div>
                 
-                <div className="overflow-x-auto rounded-lg border border-border/60">
+                <p className="text-sm text-muted-foreground mb-4">
+                  {t("projects.reviewFields")}
+                </p>
+                
+                <div className="overflow-x-auto rounded-lg border border-border/30">
                   <Table>
                     <TableHeader>
                       <TableRow>
@@ -932,21 +944,10 @@ export default function ProjectPage() {
                 </div>
                 
                 {formFields.length > 3 && (
-                  <p className="text-sm text-muted-foreground mt-2">
+                  <p className="text-sm text-muted-foreground">
                     {t("projects.andMoreFields", { count: formFields.length - 3 })}
                   </p>
                 )}
-                
-                <div className="mt-6 flex gap-3">
-                  <Button
-                    onClick={() => setCurrentStep(3)}
-                    className="gap-1 rounded-full px-6"
-                    size="lg"
-                  >
-                    {t("projects.continueToEditFields")}
-                    <ArrowRight className="h-5 w-5 ml-1" />
-                  </Button>
-                </div>
               </div>
             )}
             
@@ -960,18 +961,6 @@ export default function ProjectPage() {
                 <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
               </Button>
-              
-              {!(project && project.status === "field_detection" && formFields.length > 0) && (
-                <Button
-                  onClick={onFieldDetectionSubmit}
-                  disabled={!selectedExample || detectFieldsMutation.isPending}
-                  variant="outline"
-                  className="gap-1 rounded-full px-6 opacity-0 pointer-events-none"
-                >
-                  <ArrowRight className="h-5 w-5 ml-1" />
-                  {t("projects.continue")}
-                </Button>
-              )}
               
               {project && project.status === "field_detection" && formFields.length > 0 && (
                 <Button
@@ -988,371 +977,429 @@ export default function ProjectPage() {
       
       case 3: // Edit detected fields
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("projects.editFields")}</CardTitle>
-              <CardDescription>{t("projects.editFieldsDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="flex justify-between items-center mb-2">
-                  <h3 className="text-lg font-medium">{t("projects.formFields")}</h3>
-                  <Button onClick={openAddFieldDialog} size="sm" className="gap-1">
-                    <Plus className="h-4 w-4" />
-                    {t("projects.addField")}
-                  </Button>
-                </div>
-                
-                <div className="border rounded-lg overflow-hidden">
-                  {formFields.length === 0 ? (
-                    <div className="p-8 text-center">
-                      <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                      <h3 className="text-lg font-medium mb-1">{t("projects.noFields")}</h3>
-                      <p className="text-sm text-muted-foreground mb-4">
-                        {t("projects.noFieldsDesc")}
-                      </p>
-                      <Button onClick={openAddFieldDialog} variant="outline" size="sm" className="gap-1">
-                        <Plus className="h-4 w-4" />
-                        {t("projects.addFirstField")}
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>{t("projects.fieldName")}</TableHead>
-                            <TableHead>{t("projects.label")}</TableHead>
-                            <TableHead>{t("projects.type")}</TableHead>
-                            <TableHead>{t("projects.required")}</TableHead>
-                            <TableHead className="text-right">{t("common.actions")}</TableHead>
-                          </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {formFields && Array.isArray(formFields) ? formFields.map((field, index) => (
-                            <TableRow key={field.id || index}>
-                              <TableCell className="font-medium">{field.name}</TableCell>
-                              <TableCell>{field.label}</TableCell>
-                              <TableCell>
-                                <Badge variant="outline">
-                                  {field.fieldType}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>
-                                {field.required ? 
-                                  <Check className="h-4 w-4 text-green-500" /> : 
-                                  <X className="h-4 w-4 text-muted-foreground" />
-                                }
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-1">
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => moveFieldUp(index)}
-                                    disabled={index === 0}
-                                  >
-                                    <MoveUp className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => moveFieldDown(index)}
-                                    disabled={index === formFields.length - 1}
-                                  >
-                                    <MoveDown className="h-4 w-4" />
-                                  </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => openEditFieldDialog(index)}
-                                  >
-                                    <Pencil className="h-4 w-4" />
-                                  </Button>
-                                  <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                      <Button
-                                        variant="ghost"
-                                        size="icon"
-                                      >
-                                        <Trash2 className="h-4 w-4 text-destructive" />
-                                      </Button>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                      <AlertDialogHeader>
-                                        <AlertDialogTitle>{t("projects.deleteField")}</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                          {t("projects.deleteFieldConfirm", { name: field.name })}
-                                        </AlertDialogDescription>
-                                      </AlertDialogHeader>
-                                      <AlertDialogFooter>
-                                        <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-                                        <AlertDialogAction
-                                          onClick={() => deleteField(index)}
-                                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                                        >
-                                          {t("common.delete")}
-                                        </AlertDialogAction>
-                                      </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                  </AlertDialog>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          )) : (
-                            <TableRow>
-                              <TableCell colSpan={5} className="text-center py-4">
-                                {t("projects.noFieldsData")}
-                              </TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  )}
-                </div>
+          <div className="space-y-8">
+            {/* Section header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <Pencil className="h-5 w-5 text-primary" />
               </div>
-              
-              {/* Field edit dialog */}
-              <Dialog open={isFieldDialogOpen} onOpenChange={setIsFieldDialogOpen}>
-                <DialogContent className="sm:max-w-[500px]">
-                  <DialogHeader>
-                    <DialogTitle>
-                      {editingFieldIndex !== null ? t("projects.editField") : t("projects.addField")}
-                    </DialogTitle>
-                    <DialogDescription>
-                      {t("projects.editFieldDesc")}
-                    </DialogDescription>
-                  </DialogHeader>
-                  
-                  <Form {...fieldForm}>
-                    <form onSubmit={fieldForm.handleSubmit(addOrUpdateField)} className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={fieldForm.control}
-                          name="name"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.fieldName")}</FormLabel>
-                              <FormControl>
-                                <Input placeholder="firstName" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                {t("projects.fieldNameDesc")}
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={fieldForm.control}
-                          name="label"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.label")}</FormLabel>
-                              <FormControl>
-                                <Input placeholder="First Name" {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                {t("projects.labelDesc")}
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+              <div>
+                <h2 className="text-xl font-semibold">{t("projects.editFields")}</h2>
+                <p className="text-muted-foreground text-sm mt-1">{t("projects.editFieldsDesc")}</p>
+              </div>
+            </div>
+            
+            {/* Fields header with action button */}
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">{t("projects.formFields")}</h3>
+              <Button 
+                onClick={openAddFieldDialog} 
+                className="gap-1 rounded-full"
+              >
+                <Plus className="h-4 w-4" />
+                {t("projects.addField")}
+              </Button>
+            </div>
+            
+            {/* Fields table or empty state */}
+            {formFields.length === 0 ? (
+              <div className="border border-dashed border-border rounded-xl p-12 text-center bg-muted/10">
+                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <FileText className="h-8 w-8 text-primary/70" />
+                </div>
+                <h3 className="text-lg font-medium mb-2">{t("projects.noFields")}</h3>
+                <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                  {t("projects.noFieldsDesc")}
+                </p>
+                <Button onClick={openAddFieldDialog} variant="secondary" className="gap-1 rounded-full px-6">
+                  <Plus className="h-4 w-4" />
+                  {t("projects.addFirstField")}
+                </Button>
+              </div>
+            ) : (
+              <div className="overflow-x-auto border rounded-xl">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="font-medium">{t("projects.fieldName")}</TableHead>
+                      <TableHead className="font-medium">{t("projects.label")}</TableHead>
+                      <TableHead className="font-medium">{t("projects.type")}</TableHead>
+                      <TableHead className="font-medium">{t("projects.required")}</TableHead>
+                      <TableHead className="text-right font-medium">{t("common.actions")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {formFields && Array.isArray(formFields) ? formFields.map((field, index) => (
+                      <TableRow key={field.id || index}>
+                        <TableCell className="font-semibold">{field.name}</TableCell>
+                        <TableCell>{field.label}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline" className="rounded-full">
+                            {field.fieldType}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {field.required ? 
+                            <Check className="h-5 w-5 text-green-500" /> : 
+                            <X className="h-5 w-5 text-muted-foreground" />
+                          }
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="rounded-full"
+                              onClick={() => moveFieldUp(index)}
+                              disabled={index === 0}
+                            >
+                              <MoveUp className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="rounded-full"
+                              onClick={() => moveFieldDown(index)}
+                              disabled={index === formFields.length - 1}
+                            >
+                              <MoveDown className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="rounded-full"
+                              onClick={() => openEditFieldDialog(index)}
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="rounded-full text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>{t("projects.deleteField")}</AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    {t("projects.deleteFieldConfirm", { name: field.name })}
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel className="rounded-full">{t("common.cancel")}</AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => deleteField(index)}
+                                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90 rounded-full"
+                                  >
+                                    {t("common.delete")}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )) : (
+                      <TableRow>
+                        <TableCell colSpan={5} className="text-center py-6">
+                          <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+            
+            {/* Save fields action */}
+            {formFields.length > 0 && (
+              <div className="py-4">
+                <Button 
+                  variant="outline" 
+                  onClick={onFieldsSubmit}
+                  className="gap-1 rounded-full border-primary/30 text-primary"
+                >
+                  <Save className="h-4 w-4 mr-1" />
+                  {t("projects.saveFields")}
+                </Button>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {t("projects.saveFieldsDesc")}
+                </p>
+              </div>
+            )}
+            
+            {/* Field edit dialog */}
+            <Dialog open={isFieldDialogOpen} onOpenChange={setIsFieldDialogOpen}>
+              <DialogContent className="sm:max-w-[500px] rounded-xl">
+                <DialogHeader>
+                  <DialogTitle>
+                    {editingFieldIndex !== null ? t("projects.editField") : t("projects.addField")}
+                  </DialogTitle>
+                  <DialogDescription>
+                    {t("projects.editFieldDesc")}
+                  </DialogDescription>
+                </DialogHeader>
+                
+                <Form {...fieldForm}>
+                  <form onSubmit={fieldForm.handleSubmit(addOrUpdateField)} className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={fieldForm.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.fieldName")}</FormLabel>
+                            <FormControl>
+                              <Input placeholder="firstName" className="rounded-lg" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              {t("projects.fieldNameDesc")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={fieldForm.control}
-                          name="fieldType"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.fieldType")}</FormLabel>
-                              <Select 
-                                onValueChange={field.onChange} 
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder={t("projects.selectType")} />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  <SelectItem value="text">Text</SelectItem>
-                                  <SelectItem value="number">Number</SelectItem>
-                                  <SelectItem value="date">Date</SelectItem>
-                                  <SelectItem value="email">Email</SelectItem>
-                                  <SelectItem value="tel">Phone</SelectItem>
-                                  <SelectItem value="checkbox">Checkbox</SelectItem>
-                                  <SelectItem value="radio">Radio</SelectItem>
-                                  <SelectItem value="select">Select</SelectItem>
-                                  <SelectItem value="textarea">Textarea</SelectItem>
-                                </SelectContent>
-                              </Select>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={fieldForm.control}
-                          name="required"
-                          render={({ field }) => (
-                            <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm rounded-lg border mt-8">
-                              <div className="space-y-0.5">
-                                <FormLabel>{t("projects.required")}</FormLabel>
-                                <FormDescription className="text-xs">
-                                  {t("projects.requiredDesc")}
-                                </FormDescription>
-                              </div>
+                      <FormField
+                        control={fieldForm.control}
+                        name="label"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.label")}</FormLabel>
+                            <FormControl>
+                              <Input placeholder="First Name" className="rounded-lg" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              {t("projects.labelDesc")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={fieldForm.control}
+                        name="fieldType"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.fieldType")}</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
                               <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
+                                <SelectTrigger className="rounded-lg">
+                                  <SelectValue placeholder={t("projects.selectType")} />
+                                </SelectTrigger>
                               </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                              <SelectContent>
+                                <SelectItem value="text">Text</SelectItem>
+                                <SelectItem value="number">Number</SelectItem>
+                                <SelectItem value="date">Date</SelectItem>
+                                <SelectItem value="email">Email</SelectItem>
+                                <SelectItem value="tel">Phone</SelectItem>
+                                <SelectItem value="checkbox">Checkbox</SelectItem>
+                                <SelectItem value="radio">Radio</SelectItem>
+                                <SelectItem value="select">Select</SelectItem>
+                                <SelectItem value="textarea">Textarea</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       
-                      {(fieldForm.watch("fieldType") === "radio" || 
-                        fieldForm.watch("fieldType") === "select" || 
-                        fieldForm.watch("fieldType") === "checkbox") && (
-                        <FormField
-                          control={fieldForm.control}
-                          name="options"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.options")}</FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  placeholder="option1, option2, option3"
-                                  {...field}
-                                />
-                              </FormControl>
-                              <FormDescription>
-                                {t("projects.optionsDesc")}
+                      <FormField
+                        control={fieldForm.control}
+                        name="required"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-row items-center justify-between p-3 shadow-sm rounded-lg border mt-8">
+                            <div className="space-y-0.5">
+                              <FormLabel>{t("projects.required")}</FormLabel>
+                              <FormDescription className="text-xs">
+                                {t("projects.requiredDesc")}
                               </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      )}
+                            </div>
+                            <FormControl>
+                              <Switch
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    {(fieldForm.watch("fieldType") === "radio" || 
+                      fieldForm.watch("fieldType") === "select" || 
+                      fieldForm.watch("fieldType") === "checkbox") && (
+                      <FormField
+                        control={fieldForm.control}
+                        name="options"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.options")}</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="option1, option2, option3"
+                                className="rounded-lg"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              {t("projects.optionsDesc")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    )}
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                      <FormField
+                        control={fieldForm.control}
+                        name="defaultValue"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.defaultValue")}</FormLabel>
+                            <FormControl>
+                              <Input className="rounded-lg" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              {t("projects.defaultValueDesc")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
                       
-                      <div className="grid grid-cols-2 gap-4">
-                        <FormField
-                          control={fieldForm.control}
-                          name="defaultValue"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.defaultValue")}</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                {t("projects.defaultValueDesc")}
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        
-                        <FormField
-                          control={fieldForm.control}
-                          name="placeholder"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>{t("projects.placeholder")}</FormLabel>
-                              <FormControl>
-                                <Input {...field} />
-                              </FormControl>
-                              <FormDescription>
-                                {t("projects.placeholderDesc")}
-                              </FormDescription>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                      
-                      <DialogFooter>
-                        <Button type="button" variant="outline" onClick={() => setIsFieldDialogOpen(false)}>
-                          {t("common.cancel")}
-                        </Button>
-                        <Button type="submit">
-                          {editingFieldIndex !== null ? t("common.update") : t("common.add")}
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  </Form>
-                </DialogContent>
-              </Dialog>
-            </CardContent>
-            <CardFooter className="flex justify-between">
+                      <FormField
+                        control={fieldForm.control}
+                        name="placeholder"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>{t("projects.placeholder")}</FormLabel>
+                            <FormControl>
+                              <Input className="rounded-lg" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              {t("projects.placeholderDesc")}
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <DialogFooter>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setIsFieldDialogOpen(false)}
+                        className="rounded-full"
+                      >
+                        {t("common.cancel")}
+                      </Button>
+                      <Button type="submit" className="rounded-full">
+                        {editingFieldIndex !== null ? t("common.update") : t("common.add")}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+            
+            {/* Form actions */}
+            <div className="flex justify-between pt-4 border-t border-border/30">
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(2)}
+                className="rounded-full px-6"
               >
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
               </Button>
+              
               <Button
                 onClick={onFieldsSubmit}
                 disabled={formFields.length === 0 || updateFieldsMutation.isPending}
-                className="gap-1"
+                className="gap-1 rounded-full px-6 shadow-sm hover:shadow transition-shadow"
               >
-                {updateFieldsMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
-                <ArrowRight className="h-4 w-4 ml-1" />
+                {updateFieldsMutation.isPending && <Loader2 className="h-5 w-5 animate-spin" />}
                 {t("projects.continue")}
+                <ArrowRight className="h-5 w-5 ml-1" />
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         );
       
       case 4: // Test the form with a document
         return (
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("projects.testProject")}</CardTitle>
-              <CardDescription>{t("projects.testProjectDesc")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-6">
-                <div className="border rounded-lg p-6">
-                  <h3 className="text-lg font-medium mb-4">{t("projects.uploadTest")}</h3>
-                  <p className="text-sm text-muted-foreground mb-6">
-                    {t("projects.uploadTestDesc")}
-                  </p>
-                  
-                  <ImageUpload
-                    onImageUpload={handleTestUpload}
-                    title={t("projects.dropTest")}
-                    description={t("projects.dragAndDropTest")}
-                    isProcessing={processTestMutation.isPending}
-                  />
-                </div>
+          <div className="space-y-8">
+            {/* Section header */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                <FlaskConical className="h-5 w-5 text-primary" />
               </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
+              <div>
+                <h2 className="text-xl font-semibold">{t("projects.testProject")}</h2>
+                <p className="text-muted-foreground text-sm mt-1">{t("projects.testProjectDesc")}</p>
+              </div>
+            </div>
+            
+            {/* Step instructions */}
+            <div className="mb-6">
+              <h3 className="text-lg font-medium mb-2">{t("projects.uploadTest")}</h3>
+              <p className="text-muted-foreground">
+                {t("projects.uploadTestDesc")}
+              </p>
+            </div>
+            
+            {/* Upload component */}
+            <ImageUpload
+              onImageUpload={handleTestUpload}
+              description={t("projects.dragAndDropTest")}
+              isProcessing={processTestMutation.isPending}
+            />
+            
+            {/* Loading state */}
+            {processTestMutation.isPending && (
+              <div className="flex flex-col items-center justify-center py-10">
+                <Loader2 className="h-10 w-10 text-primary animate-spin mb-4" />
+                <h3 className="text-lg font-medium">{t("projects.processing")}</h3>
+                <p className="text-muted-foreground text-sm text-center mt-1">
+                  {t("projects.processingDesc")}
+                </p>
+              </div>
+            )}
+            
+            {/* Form actions */}
+            <div className="flex justify-between pt-4 border-t border-border/30">
               <Button 
                 variant="outline" 
                 onClick={() => setCurrentStep(3)}
+                className="rounded-full px-6"
               >
-                <ArrowLeft className="h-4 w-4 mr-1" />
+                <ArrowLeft className="h-5 w-5 mr-1" />
                 {t("projects.previous")}
               </Button>
+              
               <Button
                 onClick={() => setCurrentStep(5)}
-                className="gap-1"
+                className="gap-1 rounded-full px-6 shadow-sm hover:shadow transition-shadow"
               >
-                <ArrowRight className="h-4 w-4 ml-1" />
                 {t("projects.skipTest")}
+                <ArrowRight className="h-5 w-5 ml-1" />
               </Button>
-            </CardFooter>
-          </Card>
+            </div>
+          </div>
         );
       
       case 5: // Deploy project
