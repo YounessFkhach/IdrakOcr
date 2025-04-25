@@ -27,7 +27,7 @@ const safetySettings = [
   },
 ];
 
-export async function extractTextWithGemini(base64Image: string): Promise<string> {
+export async function extractTextWithGemini(base64Image: string, customPrompt?: string): Promise<string> {
   try {
     // For Gemini Vision
     const model = genAI.getGenerativeModel({ 
@@ -37,7 +37,7 @@ export async function extractTextWithGemini(base64Image: string): Promise<string
       }
     });
     
-    const prompt = `Extract all text from this image. Format the extracted text as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible.
+    const defaultPrompt = `Extract all text from this image. Format the extracted text as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible.
 
 Respond with a JSON object that follows this exact structure:
 {
@@ -49,8 +49,10 @@ Respond with a JSON object that follows this exact structure:
   }
 }`;
     
+    const finalPrompt = customPrompt || defaultPrompt;
+    
     const result = await model.generateContent([
-      prompt,
+      finalPrompt,
       {
         inlineData: {
           mimeType: "image/jpeg",

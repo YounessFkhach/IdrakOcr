@@ -3,7 +3,7 @@ import OpenAI from "openai";
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
-export async function extractTextWithOpenAI(base64Image: string): Promise<string> {
+export async function extractTextWithOpenAI(base64Image: string, customPrompt?: string): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-4o",
@@ -17,7 +17,7 @@ export async function extractTextWithOpenAI(base64Image: string): Promise<string
           content: [
             {
               type: "text",
-              text: "Extract all text from this image. Format the extracted text as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible. Return the result in JSON format."
+              text: customPrompt || "Extract all text from this image. Format the extracted text as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible. Return the result in JSON format."
             },
             {
               type: "image_url",
