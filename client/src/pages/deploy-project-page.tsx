@@ -47,43 +47,92 @@ export default function DeployProjectPage() {
   const [saveResults, setSaveResults] = useState(true);
   const [enableBatchOptimization, setEnableBatchOptimization] = useState(true);
   
-  // Function to convert JSON to CSV
-  const convertToCSV = (data: any[]): string => {
-    if (data.length === 0) return '';
-    
-    // Get all unique keys from all objects
-    const allKeys = new Set<string>();
-    data.forEach(item => {
-      if (item && item.extractedData) {
-        try {
-          const extracted = typeof item.extractedData === 'string' 
-            ? JSON.parse(item.extractedData) 
-            : item.extractedData;
+  // Function to extract nested field data from result object
+  const extractFieldData = (result: OcrResult): Record<string, any> => {
+    let fieldData: Record<string, any> = {};
+    try {
+      // First try to parse extractedData
+      if (result.extractedData) {
+        const parsed = typeof result.extractedData === 'string' 
+          ? JSON.parse(result.extractedData) 
+          : result.extractedData;
           
-          Object.keys(extracted).forEach(key => allKeys.add(key));
-        } catch (e) {
-          console.error("Error parsing extracted data:", e);
+        // Check if parsed has a mergedText property (common in our results format)
+        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
+          fieldData = { ...parsed.mergedText };
+        } else {
+          // If no mergedText, use the whole object
+          fieldData = { ...parsed };
         }
       }
-    });
-    
-    const headers = Array.from(allKeys);
-    const headerRow = ['fileName', ...headers].join(',');
-    
-    const rows = data.map(item => {
-      let extractedObj: Record<string, any> = {};
-      if (item && item.extractedData) {
-        try {
-          extractedObj = typeof item.extractedData === 'string' 
-            ? JSON.parse(item.extractedData) 
-            : item.extractedData;
-        } catch (e) {
-          console.error("Error parsing row data:", e);
+      // If no data yet and geminiResult exists, try that
+      else if (result.geminiResult && Object.keys(fieldData).length === 0) {
+        const parsed = typeof result.geminiResult === 'string'
+          ? JSON.parse(result.geminiResult)
+          : result.geminiResult;
+          
+        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
+          fieldData = { ...parsed.mergedText };
+        } else {
+          fieldData = { ...parsed };
+        }
+      }
+      // If still no data and openaiResult exists, try that
+      else if (result.openaiResult && Object.keys(fieldData).length === 0) {
+        const parsed = typeof result.openaiResult === 'string'
+          ? JSON.parse(result.openaiResult)
+          : result.openaiResult;
+          
+        if (parsed.mergedText && typeof parsed.mergedText === 'object') {
+          fieldData = { ...parsed.mergedText };
+        } else {
+          fieldData = { ...parsed };
         }
       }
       
+      // Filter out any nested objects that aren't primitive values
+      Object.keys(fieldData).forEach(key => {
+        if (fieldData[key] !== null && 
+            typeof fieldData[key] === 'object' && 
+            !Array.isArray(fieldData[key])) {
+          delete fieldData[key];
+        }
+      });
+      
+      return fieldData;
+    } catch (e) {
+      console.error("Error extracting field data:", e);
+      return {};
+    }
+  };
+
+  // Function to convert JSON to CSV
+  const convertToCSV = (data: OcrResult[]): string => {
+    if (data.length === 0) return '';
+    
+    // Extract all field data first
+    const extractedDataArray = data.map(result => {
+      return {
+        fileName: result.fileName,
+        ...extractFieldData(result)
+      };
+    });
+    
+    // Get all unique keys
+    const allKeys = new Set<string>();
+    extractedDataArray.forEach(item => {
+      Object.keys(item).forEach(key => allKeys.add(key));
+    });
+    
+    // Ensure fileName comes first
+    allKeys.delete('fileName');
+    const headers = ['fileName', ...Array.from(allKeys)];
+    const headerRow = headers.join(',');
+    
+    // Create rows
+    const rows = extractedDataArray.map(item => {
       const values = headers.map(header => {
-        const value = extractedObj[header];
+        const value = item[header];
         // Handle special characters, quotes, commas in CSV
         if (value === null || value === undefined) return '';
         if (typeof value === 'string') {
@@ -96,7 +145,7 @@ export default function DeployProjectPage() {
         return String(value);
       });
       
-      return [item.fileName, ...values].join(',');
+      return values.join(',');
     });
     
     return [headerRow, ...rows].join('\n');
@@ -112,20 +161,11 @@ export default function DeployProjectPage() {
     let mimeType: string;
     
     if (outputFormat === 'json') {
-      // Prepare JSON data
+      // Prepare JSON data with flattened field data
       const jsonData = completedResults.map(result => {
-        let extractedData: Record<string, any> = {};
-        try {
-          extractedData = typeof result.extractedData === 'string' 
-            ? JSON.parse(result.extractedData) 
-            : result.extractedData;
-        } catch (e) {
-          console.error("Error parsing JSON data:", e);
-        }
-        
         return {
           fileName: result.fileName,
-          ...extractedData
+          ...extractFieldData(result)
         };
       });
       
