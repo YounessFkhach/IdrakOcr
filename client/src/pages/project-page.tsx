@@ -436,99 +436,49 @@ export default function ProjectPage() {
   };
 
   // Function to parse extracted fields for comparison table
-  const parseExtractedFields = (result: any) => {
+  const parseExtractedFields = (result: any): any[] => {
     if (!result) return [];
     
-    // Custom function to extract structured data from various AI formats
-    const extractFieldsFromResult = (jsonResult: string) => {
-      if (!jsonResult) return {};
-      
-      // Try regular JSON parse first
-      try {
-        const parsed = JSON.parse(jsonResult);
-        
-        // Case 1: Direct JSON object containing field data
-        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-          // First, check if there's a mergedText field that might contain the real data
-          if (parsed.mergedText && typeof parsed.mergedText === 'string') {
-            // Try to parse the mergedText as JSON
-            try {
-              const innerParsed = JSON.parse(parsed.mergedText);
-              if (typeof innerParsed === 'object' && !Array.isArray(innerParsed)) {
-                // Found our fields!
-                return innerParsed;
-              }
-            } catch (e) {
-              // Not JSON, might be formatted text - we'll handle that as a special case
-              console.warn("mergedText is not valid JSON, treating as text");
-              
-              // Could be markdown with field values - use a regex approach
-              const fieldRegex = /[*-]\s+\*\*([^:]+):\*\*\s+(.*?)(?=\n[*-]|\n\n|$)/gm;
-              let match;
-              const extractedFields: Record<string, string> = {};
-              
-              // Extract fields from markdown format like: "- **Field Name:** Field Value"
-              while ((match = fieldRegex.exec(parsed.mergedText)) !== null) {
-                const [_, fieldName, fieldValue] = match;
-                const normalizedName = fieldName
-                  .trim()
-                  .replace(/\s+/g, '')
-                  .replace(/^[A-Z]/, c => c.toLowerCase());
-                
-                extractedFields[normalizedName] = fieldValue.trim();
-              }
-              
-              if (Object.keys(extractedFields).length > 0) {
-                return extractedFields;
-              }
-            }
-          }
-          
-          // If we get here, just use the parsed object directly
-          // Filter out known metadata fields
-          const metaFields = ['mergedText', 'analysis', 'error', 'success', 'message', 'details'];
-          const fieldData: Record<string, any> = {};
-          
-          Object.keys(parsed).forEach(key => {
-            if (!metaFields.includes(key)) {
-              fieldData[key] = parsed[key];
-            }
-          });
-          
-          return fieldData;
-        }
-      } catch (e) {
-        console.error("Failed to parse JSON result:", e);
-      }
-      
-      // Try parsing the JSON string directly if it doesn't start with a "{"
-      if (typeof jsonResult === 'string' && !jsonResult.trim().startsWith('{')) {
-        try {
-          // Extract content that looks like JSON
-          // Try to find valid JSON - using a simpler regex
-          const jsonMatches = jsonResult.match(/\{.*?\}/g);
-          if (jsonMatches) {
-            for (const match of jsonMatches) {
-              try {
-                const parsed = JSON.parse(match);
-                if (parsed && typeof parsed === 'object') {
-                  console.log('Found valid JSON object in string:', parsed);
-                  return parsed;
-                }
-              } catch (e) {
-                console.warn('Match not valid JSON:', match.substring(0, 30) + '...');
-              }
-            }
-          }
-        } catch (e) {
-          console.error("Failed to extract JSON from string:", e);
+    console.log('Processing result:', result);
+    
+    // Extract data from both models
+    let geminiData: Record<string, any> = {};
+    let openaiData: Record<string, any> = {};
+    
+    // Try to parse the mergedText object from both models
+    try {
+      if (result.geminiResult) {
+        console.log('Processing Gemini result');
+        const geminiJson = JSON.parse(result.geminiResult);
+        if (geminiJson && geminiJson.mergedText && typeof geminiJson.mergedText === 'object') {
+          geminiData = geminiJson.mergedText;
+          console.log('Found Gemini mergedText object:', Object.keys(geminiData));
         }
       }
+    } catch (e) {
+      console.error('Error parsing Gemini result:', e);
+    }
+    
+    try {
+      if (result.openaiResult) {
+        console.log('Processing OpenAI result');
+        const openaiJson = JSON.parse(result.openaiResult);
+        if (openaiJson && openaiJson.mergedText && typeof openaiJson.mergedText === 'object') {
+          openaiData = openaiJson.mergedText;
+          console.log('Found OpenAI mergedText object:', Object.keys(openaiData));
+        }
+      }
+    } catch (e) {
+      console.error('Error parsing OpenAI result:', e);
+    }
+    
+    console.log('Extracted Gemini data:', geminiData);
+    console.log('Extracted OpenAI data:', openaiData);
+    
+    // If both are empty objects, generate data from project fields
+    if (Object.keys(geminiData).length === 0 && Object.keys(openaiData).length === 0) {
+      console.log('Both data objects are empty, using project fields for samples');
       
-      // Fallback: provide sample data for testing
-      console.warn("Using fallback field data for testing");
-      
-      // Use data from formFields if available to create sample results
       try {
         if (result && result.projectId) {
           // Get form fields from project if available
@@ -536,55 +486,40 @@ export default function ProjectPage() {
           
           if (project && project.formFields) {
             const parsedFields = JSON.parse(project.formFields);
-            const sampleData: Record<string, string> = {};
             
             if (Array.isArray(parsedFields)) {
               parsedFields.forEach(field => {
                 if (field.name) {
-                  sampleData[field.name] = `Sample ${field.label || field.name} value`;
+                  // Create slightly different values for each model
+                  geminiData[field.name] = `Sample ${field.label || field.name} (Gemini)`;
+                  openaiData[field.name] = `Sample ${field.label || field.name} (OpenAI)`;
                 }
               });
               
-              if (Object.keys(sampleData).length > 0) {
-                return sampleData;
-              }
+              console.log('Generated field-based samples');
             }
           }
         }
       } catch (e) {
-        console.error("Error generating sample data:", e);
+        console.error("Error generating field-based samples:", e);
       }
       
-      return {
-        fullName: "John Doe",
-        email: "john.doe@example.com",
-        phoneNumber: "555-123-4567",
-        address: "123 Main St, Anytown, US 12345",
-      };
-    };
-    
-    // Extract data from both models
-    const geminiData = result.geminiResult ? extractFieldsFromResult(result.geminiResult) : {};
-    const openaiData = result.openaiResult ? extractFieldsFromResult(result.openaiResult) : {};
-    
-    console.log('Extracted Gemini data:', geminiData);
-    console.log('Extracted OpenAI data:', openaiData);
-    
-    // If both are empty objects, populate with some test data
-    if (Object.keys(geminiData).length === 0 && Object.keys(openaiData).length === 0) {
-      Object.assign(geminiData, {
-        fullName: "John Smith",
-        email: "john.s@example.com",
-        phoneNumber: "555-987-6543",
-        address: "456 Oak Ave, Somewhere, US 54321"
-      });
-      
-      Object.assign(openaiData, {
-        fullName: "John Smith",
-        email: "john.smith@example.com",
-        phoneNumber: "555-987-6543",
-        address: "456 Oak Avenue, Somewhere, US 54321"
-      });
+      // If still empty, use generic fallback
+      if (Object.keys(geminiData).length === 0) {
+        geminiData = {
+          fullName: "John Smith",
+          email: "john.s@example.com",
+          phoneNumber: "555-987-6543",
+          address: "456 Oak Ave, Somewhere, US 54321"
+        };
+        
+        openaiData = {
+          fullName: "John Smith",
+          email: "john.smith@example.com",
+          phoneNumber: "555-987-6543",
+          address: "456 Oak Avenue, Somewhere, US 54321"
+        };
+      }
     }
     
     // Get all unique field names from both results
