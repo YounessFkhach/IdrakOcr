@@ -121,7 +121,7 @@ export default function DeployProjectPage() {
         formData.append("images", file);
       });
       
-      const res = await fetch(`/api/projects/${id}/deploy`, {
+      const res = await fetch(`/api/projects/${id}/batch-process`, {
         method: "POST",
         body: formData,
         credentials: "include",
