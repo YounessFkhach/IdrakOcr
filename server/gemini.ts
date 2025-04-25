@@ -30,7 +30,7 @@ const safetySettings = [
 export async function extractTextWithGemini(base64Image: string): Promise<string> {
   try {
     // For Gemini Pro Vision
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-vision" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
     
     const prompt = "Extract all text from this image. Format the result as markdown with appropriate headers, lists, tables, etc. Preserve the layout and structure of the document as much as possible.";
     
@@ -46,7 +46,7 @@ export async function extractTextWithGemini(base64Image: string): Promise<string
     
     const response = await result.response;
     return response.text() || "No text extracted";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini text extraction error:", error);
     throw new Error(`Failed to extract text with Gemini: ${error.message}`);
   }
@@ -58,7 +58,7 @@ export async function compareAndMergeResults(
   customPrompt?: string
 ): Promise<string> {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     
     const prompt = customPrompt 
       ? `${customPrompt}\n\nHere are two extractions of the same document:\n\nExtraction 1 (Gemini):\n${geminiData}\n\nExtraction 2 (GPT):\n${gptData}\n\nPlease analyze both extractions and create a merged, improved version that takes the most accurate parts from each.`
@@ -67,7 +67,7 @@ export async function compareAndMergeResults(
     const result = await model.generateContent(prompt);
     const response = await result.response;
     return response.text() || "Failed to merge results";
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini comparison error:", error);
     throw new Error(`Failed to compare and merge results with Gemini: ${error.message}`);
   }
