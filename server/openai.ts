@@ -10,7 +10,7 @@ export async function extractTextWithOpenAI(base64Image: string, customPrompt?: 
       messages: [
         {
           role: "system",
-          content: "You are an OCR specialist that extracts text from images. Always respond with a JSON object that follows this structure: { \"text\": \"the extracted text in markdown format\", \"confidence\": 0.0-1.0, \"metadata\": { \"image_quality\": \"description of image quality\", \"content_type\": \"document type detected\" } }"
+          content: "You are an OCR specialist that extracts text from images. Always respond with a JSON object that follows this structure: { \"text\": \"the extracted text in markdown format\", \"confidence\": 0.0-1.0, \"metadata\": { \"image_quality\": \"description of image quality\", \"content_type\": \"document type detected\" } }. IMPORTANT: When extracting data for specific fields, ONLY extract values for the requested fields - do NOT create or add any fields that aren't explicitly requested."
         },
         {
           role: "user",
@@ -80,7 +80,7 @@ export async function compareAndMergeResults(
       messages: [
         {
           role: "system",
-          content: "You are an OCR expert that compares multiple text extractions and creates the most accurate version. Always respond with a JSON object that follows this structure: { \"mergedText\": \"the merged text in markdown format\", \"analysis\": { \"geminiScore\": 0.0-1.0, \"gptScore\": 0.0-1.0, \"reasoning\": \"explanation of merge decisions\" } }"
+          content: "You are an OCR expert that compares multiple text extractions and creates the most accurate version. Always respond with a JSON object that follows this structure: { \"mergedText\": \"the merged text in JSON format\", \"analysis\": { \"geminiScore\": 0.0-1.0, \"gptScore\": 0.0-1.0, \"reasoning\": \"explanation of merge decisions\" } }. VERY IMPORTANT: When merging field data, include ONLY the fields that were specifically requested in the original prompt. NEVER add extra fields that weren't in the original field list. Only extract data for the form fields specified in the original request."
         },
         {
           role: "user",

@@ -47,7 +47,9 @@ Respond with a JSON object that follows this exact structure:
     "image_quality": "description of image quality",
     "content_type": "document type detected"
   }
-}`;
+}
+
+VERY IMPORTANT: When extracting data for specific form fields, ONLY extract values for the fields explicitly requested. Do NOT create or add any fields that are not in the original field list. Always adhere strictly to the requested field names and format.`;
     
     const finalPrompt = customPrompt || defaultPrompt;
     
@@ -135,13 +137,15 @@ export async function compareAndMergeResults(
 
 Respond with a JSON object that follows this exact structure:
 {
-  "mergedText": "the merged text in markdown format",
+  "mergedText": "the merged text in JSON format",
   "analysis": {
     "geminiScore": 0.0-1.0,
     "gptScore": 0.0-1.0,
     "reasoning": "explanation of merge decisions"
   }
-}`;
+}
+
+VERY IMPORTANT: When merging field data, include ONLY the fields that were specifically requested in the original prompt. Do NOT create or add any extra fields that weren't in the original field list. Only extract data for the form fields specified in the original request.`;
     
     const result = await model.generateContent(prompt);
     const response = await result.response;
